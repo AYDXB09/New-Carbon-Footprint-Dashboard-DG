@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carbon Footprint Dashboard | GHG Accounting</title>
+    <meta name="description"
+        content="Process school activity data to generate carbon footprint reports using Monte Carlo simulation">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+
+    <!-- PapaParse for CSV -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+    <!-- html2pdf.js for PDF Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">GS</span>
+                    <h1>Carbon Footprint Dashboard</h1>
+                </div>
+                <p class="subtitle">GHG Accounting for Digital Organizations</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content" id="resizableContainer">
+            <!-- Left Panel: Controls -->
+            <aside class="panel controls-panel" id="leftPanel">
+                <h2 class="panel-title">Data Upload</h2>
+
+                <!-- CSV Upload -->
+                <label class="upload-zone" id="uploadZone" for="csvInput">
+                    <div class="upload-icon">CSV</div>
+                    <p class="upload-text">Drag & drop CSV file here</p>
+                    <p class="upload-subtext">or click to browse</p>
+                    <input type="file" id="csvInput" accept=".csv" style="display: none;">
+                </label>
+
+                <div class="formatting-instructions">
+                    <h3>CSV Requirements</h3>
+                    <ul>
+                        <li><code>user_type</code>: Student, Staff</li>
+                        <li><code>device_hours</code>: Daily avg usage (0-24)</li>
+                        <li><code>zoom_launches</code>: Total sessions</li>
+                        <li><code>canvas_pageviews</code>: Total pageviews</li>
+                        <li><code>tool_launches</code>: 3rd party tool usage</li>
+                        <li><code>region</code>: US, UK, China, Korea, UAE, Other</li>
+                    </ul>
+                    <a href="sample-data.csv" download class="source-btn"
+                        style="width:100%; text-align:center; margin-top:10px;">Download Sample CSV</a>
+                </div>
+
+                <div id="fileInfo" class="file-info hidden">
+                    <span class="file-name"></span>
+                    <span class="file-rows"></span>
+                </div>
+
+                <!-- Validation Warnings -->
+                <div id="validationWarnings" class="validation-warnings hidden">
+                    <h3>Data Warnings</h3>
+                    <ul id="warningsList"></ul>
+                </div>
+
+                <!-- Simulation Controls -->
+                <div class="section">
+                    <h2 class="panel-title">Simulation Settings</h2>
+
+                    <div class="control-group">
+                        <label for="iterations">Monte Carlo Iterations</label>
+                        <input type="number" id="iterations" value="10000" min="1000" max="100000" step="1000">
+                        <span class="source-link"
+                            data-tooltip="Standard practice for Monte Carlo simulations to achieve statistical significance">Info</span>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="confidenceLevel">Confidence Level (%)</label>
+                        <input type="number" id="confidenceLevel" value="90" min="80" max="99" step="1">
+                    </div>
+                </div>
+
+                <!-- Run Button -->
+                <button id="runSimulation" class="btn-primary" disabled>
+                    Run Simulation
+                </button>
+            </aside>
+
+            <div class="resizer" id="resizerLeft"></div>
+
+            <!-- Center Panel: Parameters -->
+            <section class="panel parameters-panel" id="centerPanel">
+                <h2 class="panel-title">Emission Factors & Parameters</h2>
+                <p class="panel-description">All values are adjustable. Click source links for references.</p>
+
+                <!-- Device Electricity -->
+                <div class="param-section">
+                    <h3 class="param-section-title">Device Electricity</h3>
+                    <p class="param-description">Log-normal distribution: P ~ LogNormal(ln(μ), σ)</p>
+
+                    <div class="param-row">
+                        <div class="param-group">
+                            <label>Mean Power (W)</label>
+                            <input type="number" id="deviceMeanPower" value="50" min="10" max="200" step="5">
+                        </div>
+                        <div class="param-group">
+                            <label>Std Dev (σ)</label>
+                            <input type="number" id="deviceStdDev" value="0.2" min="0.05" max="0.5" step="0.05">
+                        </div>
+                        <a href="https://www.energystar.gov/products/computers" target="_blank"
+                            class="source-btn">Source: EPA Energy Star</a>
+                    </div>
+                </div>
+
+                <!-- Zoom Sessions -->
+                <div class="param-section">
+                    <h3 class="param-section-title">Zoom Sessions</h3>
+                    <p class="param-description">Uniform distribution for CO₂ per hour of video conferencing</p>
+
+                    <div class="param-row">
+                        <div class="param-group">
+                            <label>Min (kg CO₂/hr)</label>
+                            <input type="number" id="zoomMin" value="0.20" min="0.05" max="0.50" step="0.01">
+                        </div>
+                        <div class="param-group">
+                            <label>Max (kg CO₂/hr)</label>
+                            <input type="number" id="zoomMax" value="0.80" min="0.30" max="1.50" step="0.01">
+                        </div>
+                        <a href="https://www.iea.org/reports/data-centres-and-data-transmission-networks"
+                            target="_blank" class="source-btn">Source: IEA Data Centres Report</a>
+                    </div>
+                </div>
+
+                <!-- Data Transfer -->
+                <div class="param-section">
+                    <h3 class="param-section-title">Data Transfer</h3>
+                    <p class="param-description">Energy consumption per GB of data transferred</p>
+
+                    <div class="param-row">
+                        <div class="param-group">
+                            <label>Min (kWh/GB)</label>
+                            <input type="number" id="dataTransferMin" value="0.015" min="0.005" max="0.05" step="0.001">
+                        </div>
+                        <div class="param-group">
+                            <label>Max (kWh/GB)</label>
+                            <input type="number" id="dataTransferMax" value="0.100" min="0.05" max="0.20" step="0.005">
+                        </div>
+                        <a href="https://www.sciencedirect.com/science/article/pii/S2542435121001355" target="_blank"
+                            class="source-btn">Source: Joule Journal 2021</a>
+                    </div>
+                </div>
+
+                <!-- Canvas Server -->
+                <div class="param-section">
+                    <h3 class="param-section-title">Canvas/LMS Server</h3>
+                    <p class="param-description">CO₂ per pageview with overhead multiplier</p>
+
+                    <div class="param-row">
+                        <div class="param-group">
+                            <label>Min (kg CO₂/view)</label>
+                            <input type="number" id="canvasMin" value="0.0005" min="0.0001" max="0.001" step="0.0001">
+                        </div>
+                        <div class="param-group">
+                            <label>Max (kg CO₂/view)</label>
+                            <input type="number" id="canvasMax" value="0.002" min="0.001" max="0.005" step="0.0001">
+                        </div>
+                        <div class="param-group">
+                            <label>Overhead Multiplier</label>
+                            <input type="number" id="canvasOverhead" value="1.1" min="1.0" max="1.5" step="0.05">
+                        </div>
+                        <a href="https://www.websitecarbon.com/how-does-it-work/" target="_blank"
+                            class="source-btn">Source: Website Carbon Methodology</a>
+                    </div>
+                </div>
+
+                <!-- Regional Grid Intensity -->
+                <div class="param-section">
+                    <h3 class="param-section-title">Regional Grid Intensity (kg CO₂/kWh)</h3>
+                    <p class="param-description">Carbon intensity of electricity grids by region</p>
+
+                    <div class="grid-intensity-table">
+                        <div class="grid-row">
+                            <label>United States</label>
+                            <input type="number" id="gridUS" value="0.384" min="0.1" max="1.0" step="0.01">
+                        </div>
+                        <div class="grid-row">
+                            <label>United Kingdom</label>
+                            <input type="number" id="gridUK" value="0.124" min="0.05" max="0.5" step="0.01">
+                        </div>
+                        <div class="grid-row">
+                            <label>China</label>
+                            <input type="number" id="gridChina" value="0.492" min="0.2" max="1.0" step="0.01">
+                        </div>
+                        <div class="grid-row">
+                            <label>South Korea</label>
+                            <input type="number" id="gridSouthKorea" value="0.415" min="0.1" max="0.8" step="0.01">
+                        </div>
+                        <div class="grid-row">
+                            <label>UAE</label>
+                            <input type="number" id="gridUAE" value="0.442" min="0.1" max="0.8" step="0.01">
+                        </div>
+                        <div class="grid-row">
+                            <label>Other (Global Avg)</label>
+                            <input type="number" id="gridOther" value="0.350" min="0.1" max="0.8" step="0.01">
+                        </div>
+                    </div>
+                    <a href="https://ember-climate.org/data/data-tools/data-explorer/" target="_blank"
+                        class="source-btn">Source: Ember Climate Data Explorer 2024</a>
+                </div>
+
+                <!-- Offset Costs -->
+                <div class="param-section">
+                    <h3 class="param-section-title">Carbon Offset Costs</h3>
+                    <p class="param-description">Credit mix: 70% medium-cost + 30% low-cost</p>
+
+                    <div class="param-row">
+                        <div class="param-group">
+                            <label>Medium Cost ($/tonne)</label>
+                            <input type="number" id="offsetMedium" value="30" min="20" max="50" step="1">
+                        </div>
+                        <div class="param-group">
+                            <label>Low Cost ($/tonne)</label>
+                            <input type="number" id="offsetLow" value="25" min="10" max="35" step="1">
+                        </div>
+                        <div class="param-group">
+                            <label>Medium Weight (%)</label>
+                            <input type="number" id="offsetMediumWeight" value="70" min="0" max="100" step="5">
+                        </div>
+                        <a href="https://www.goldstandard.org/blog-item/carbon-pricing-what-carbon-credit-worth"
+                            target="_blank" class="source-btn">Source: Gold Standard</a>
+                    </div>
+                </div>
+
+                <!-- Outlier Thresholds -->
+                <div class="param-section">
+                    <h3 class="param-section-title">Data Validation Thresholds</h3>
+                    <p class="param-description">Values above these thresholds will be flagged as outliers</p>
+
+                    <div class="param-row">
+                        <div class="param-group">
+                            <label>Max Device Hours/Day</label>
+                            <input type="number" id="maxDeviceHours" value="16" min="8" max="24" step="1">
+                        </div>
+                        <div class="param-group">
+                            <label>Max Zoom Sessions</label>
+                            <input type="number" id="maxZoomSessions" value="500" min="100" max="1000" step="50">
+                        </div>
+                        <div class="param-group">
+                            <label>Max Canvas Views</label>
+                            <input type="number" id="maxCanvasViews" value="10000" min="1000" max="50000" step="1000">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="resizer" id="resizerRight"></div>
+
+            <!-- Right Panel: Results -->
+            <section class="panel results-panel" id="rightPanel">
+                <h2 class="panel-title">Results</h2>
+
+                <!-- Results Summary -->
+                <div id="resultsPlaceholder" class="results-placeholder">
+                    <p>Upload a CSV and run simulation to see results</p>
+                </div>
+
+                <div id="resultsContent" class="results-content hidden">
+                    <!-- Summary Cards -->
+                    <div class="summary-cards">
+                        <div class="summary-card">
+                            <span class="card-label">Lowest (5th %ile)</span>
+                            <span class="card-value" id="lowestTotal">--</span>
+                            <span class="card-unit">kg CO₂</span>
+                        </div>
+                        <div class="summary-card highlight">
+                            <span class="card-label">Most Likely (Median)</span>
+                            <span class="card-value" id="medianTotal">--</span>
+                            <span class="card-unit">kg CO₂</span>
+                        </div>
+                        <div class="summary-card">
+                            <span class="card-label">Highest (95th %ile)</span>
+                            <span class="card-value" id="highestTotal">--</span>
+                            <span class="card-unit">kg CO₂</span>
+                        </div>
+                    </div>
+
+                    <!-- Breakdown Table -->
+                    <div class="breakdown-section">
+                        <h3>Emissions by Category</h3>
+                        <table class="breakdown-table">
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Lowest</th>
+                                    <th>Most Likely</th>
+                                    <th>Highest</th>
+                                </tr>
+                            </thead>
+                            <tbody id="breakdownBody">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Distribution Chart -->
+                    <div class="chart-section">
+                        <h3>Frequency Distribution</h3>
+                        <div id="distributionChart"></div>
+                    </div>
+
+                    <!-- Category Breakdown Chart -->
+                    <div class="chart-section">
+                        <h3>Emissions by Category</h3>
+                        <div id="categoryChart"></div>
+                    </div>
+
+                    <!-- Offset Recommendation -->
+                    <div class="offset-section">
+                        <h3>Carbon Offset Recommendation</h3>
+                        <div class="offset-card">
+                            <div class="offset-row">
+                                <span>Total Emissions (Most Likely)</span>
+                                <span id="offsetTonnes">-- tonnes CO₂</span>
+                            </div>
+                            <div class="offset-row">
+                                <span>Weighted Offset Price</span>
+                                <span id="offsetPrice">$--/tonne</span>
+                            </div>
+                            <div class="offset-row total">
+                                <span>Recommended Offset Cost</span>
+                                <span id="offsetCost">$--</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Compliance Section -->
+                    <div class="offset-section">
+                        <h3>Compliance & Disclaimers</h3>
+
+                        <div class="compliance-item">
+                            <h4>NY General Business Law § 349</h4>
+                            <p>This carbon footprint assessment is provided for informational purposes only. All
+                                calculations are based on probabilistic models and publicly available emission factors.
+                                Actual emissions may vary based on individual usage patterns and local conditions. This
+                                report does not constitute a guarantee of environmental impact reduction.</p>
+                        </div>
+
+                        <div class="compliance-item">
+                            <h4>FTC Green Guides Compliance</h4>
+                            <p>Environmental claims in this report are qualified by the methodology described. Monte
+                                Carlo simulations provide a range of possible outcomes rather than exact figures. Carbon
+                                offset recommendations reference verified third-party standards but actual offset
+                                effectiveness depends on project quality and verification.</p>
+                        </div>
+
+                        <div class="compliance-item">
+                            <h4>Methodology Notice</h4>
+                            <p>This assessment follows the GHG Protocol Corporate Standard for Scope 2 and Scope 3
+                                emissions accounting. Distribution parameters are sourced from peer-reviewed literature
+                                and regulatory databases. All sources are linked in the Parameters panel.</p>
+                        </div>
+                    </div>
+
+                    <!-- Export Button -->
+                    <button id="exportReport" class="btn-secondary">
+                        Export Report
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Carbon Footprint Dashboard v1.0 | Based on Dwight Global Online School Assessment Methodology</p>
+            <p class="footer-links">
+                <a href="#" id="showMethodology">View Full Methodology</a> |
+                <a href="sample-data.csv" download>Download Sample CSV</a>
+            </p>
+        </footer>
+    </div>
+
+    <!-- Methodology Modal -->
+    <div id="methodologyModal" class="modal hidden">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModal">×</button>
+            <h2>Calculation Methodology</h2>
+
+            <h3>Monte Carlo Simulation</h3>
+            <p>This tool performs <strong>10,000 iterations</strong> (configurable) to account for uncertainty in
+                emission factors. Each iteration samples from the specified distributions to calculate total emissions.
+            </p>
+
+            <h3>Distribution Types</h3>
+            <ul>
+                <li><strong>Log-normal</strong>: Used for device power consumption to model right-skewed real-world
+                    usage patterns</li>
+                <li><strong>Uniform</strong>: Used for emission factors where only min/max bounds are known from
+                    literature</li>
+            </ul>
+
+            <h3>Calculation Steps</h3>
+            <ol>
+                <li>Parse CSV data and validate against outlier thresholds</li>
+                <li>For each Monte Carlo iteration:
+                    <ul>
+                        <li>Sample device power from log-normal distribution</li>
+                        <li>Sample emission factors from uniform distributions</li>
+                        <li>Calculate emissions for each row × factor × regional grid intensity</li>
+                        <li>Sum all emissions for this iteration</li>
+                    </ul>
+                </li>
+                <li>Calculate percentiles from all iterations</li>
+                <li>Generate confidence intervals and visualizations</li>
+            </ol>
+
+            <h3>Data Sources</h3>
+            <ul>
+                <li><a href="https://www.energystar.gov/products/computers" target="_blank">EPA Energy Star - Device
+                        Power Consumption</a></li>
+                <li><a href="https://www.iea.org/reports/data-centres-and-data-transmission-networks"
+                        target="_blank">IEA - Data Centres & Networks</a></li>
+                <li><a href="https://ember-climate.org/data/data-tools/data-explorer/" target="_blank">Ember - Grid
+                        Carbon Intensity</a></li>
+                <li><a href="https://www.sciencedirect.com/science/article/pii/S2542435121001355" target="_blank">Joule
+                        Journal - Network Energy</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script src="charts.js"></script>
+</body>
+
+</html>

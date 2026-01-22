@@ -1,0 +1,26 @@
+user_type,device_hours,zoom_launches,canvas_pageviews,tool_launches,region
+Student,4.5,15,250,45,US
+Student,3.2,12,180,30,US
+Student,5.1,18,320,55,UK
+Staff,6.8,25,450,80,US
+Student,2.8,10,150,25,China
+Student,4.0,14,220,40,South Korea
+Staff,7.2,30,520,95,UAE
+Student,3.5,11,190,35,Other
+Student,4.8,16,280,50,US
+Student,3.9,13,210,38,UK
+Staff,6.5,22,400,75,China
+Student,2.5,8,120,20,South Korea
+Student,5.5,20,350,60,UAE
+Student,3.0,9,140,28,US
+Staff,7.5,28,480,90,UK
+Student,4.2,15,240,42,China
+Student,3.7,12,200,36,US
+Student,4.6,17,290,48,South Korea
+Staff,6.2,24,420,78,UAE
+Student,2.9,10,155,26,Other
+Student,5.0,19,310,52,US
+Student,3.3,11,175,32,UK
+Staff,7.0,26,460,85,China
+Student,4.4,16,260,44,US
+Student,3.6,13,195,37,South Korea
