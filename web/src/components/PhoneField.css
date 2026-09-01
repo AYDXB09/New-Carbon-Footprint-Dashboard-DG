@@ -1,0 +1,43 @@
+.phonefield-row { display: flex; gap: 0.5rem; }
+
+.cc-picker { position: relative; flex-shrink: 0; width: 106px; }
+.cc-btn {
+  display: flex; align-items: center; gap: 0.35rem; width: 100%; height: 40px;
+  background: var(--paper); border: 1px solid var(--rule); border-radius: 6px;
+  padding: 0 0.5rem; cursor: pointer; font-family: "IBM Plex Sans"; color: var(--ink);
+}
+.cc-btn:focus-visible, .cc-btn.open { outline: 2px solid var(--blue); outline-offset: 1px; }
+.cc-btn .flag { font-size: 1rem; line-height: 1; }
+.cc-btn .code { flex: 1; font-size: 0.76rem; text-align: left; }
+.cc-btn .car { color: var(--ink-faint); font-size: 0.65rem; }
+
+.phone-number {
+  flex: 1; height: 40px; box-sizing: border-box;
+  font-family: "IBM Plex Sans"; font-size: 0.88rem; background: var(--paper);
+  border: 1px solid var(--rule); border-radius: 6px; padding: 0 0.7rem; color: var(--ink);
+}
+.phone-number:focus { outline: 2px solid var(--blue); outline-offset: 1px; }
+
+.cc-dropdown {
+  position: absolute; top: calc(100% + 4px); left: 0; width: 280px; z-index: 20;
+  background: var(--surface); border: 1px solid var(--rule); border-radius: 8px;
+  box-shadow: var(--shadow); overflow: hidden;
+}
+.cc-search { padding: 0.5rem; border-bottom: 1px solid var(--rule-soft); }
+.cc-search input {
+  width: 100%; box-sizing: border-box; font-family: "IBM Plex Mono"; font-size: 0.78rem;
+  background: var(--paper); border: 1px solid var(--rule); border-radius: 5px;
+  padding: 0.4rem 0.55rem; color: var(--ink);
+}
+.cc-search input:focus { outline: 2px solid var(--blue); outline-offset: 1px; }
+.cc-list { max-height: 220px; overflow-y: auto; }
+.cc-item {
+  display: flex; align-items: center; gap: 0.55rem; width: 100%; box-sizing: border-box;
+  padding: 0.45rem 0.65rem; cursor: pointer; font-size: 0.8rem; background: none; border: none;
+  text-align: left; font-family: "IBM Plex Sans"; color: var(--ink);
+}
+.cc-item:hover, .cc-item.active { background: var(--band); }
+.cc-item .flag { font-size: 1rem; }
+.cc-item .name { flex: 1; }
+.cc-item .code { color: var(--ink-faint); font-size: 0.75rem; }
+.cc-empty { padding: 0.6rem 0.65rem; font-size: 0.78rem; color: var(--ink-faint); }

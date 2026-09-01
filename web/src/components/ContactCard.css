@@ -1,0 +1,64 @@
+.contact-card {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.contact-card .field-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--rule);
+}
+@media (max-width: 640px) {
+  .contact-card .field-grid { grid-template-columns: 1fr; }
+}
+
+.contact-card .field {
+  background: var(--surface);
+  padding: 0.95rem 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.contact-card .field-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.contact-card .field-label label {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.contact-card .field input {
+  font-family: "IBM Plex Sans";
+  font-size: 0.88rem;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 0.55rem 0.7rem;
+  color: var(--ink);
+  width: 100%;
+  box-sizing: border-box;
+  height: 40px;
+}
+.contact-card .field input:focus {
+  outline: 2px solid var(--blue);
+  outline-offset: 1px;
+}
+
+.optional-tag {
+  font-family: "IBM Plex Mono";
+  font-size: 0.6rem;
+  letter-spacing: 0.04em;
+  padding: 0.14rem 0.42rem;
+  border-radius: 4px;
+  background: var(--surface-2);
+  color: var(--ink-faint);
+  font-weight: 600;
+  margin-left: 0.4rem;
+}

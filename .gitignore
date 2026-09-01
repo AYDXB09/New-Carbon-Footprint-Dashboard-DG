@@ -1,0 +1,42 @@
+# ---------------------------------------------------------------------------
+# OS / editor cruft
+# ---------------------------------------------------------------------------
+.DS_Store
+**/.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# ---------------------------------------------------------------------------
+# Dependencies / build output
+# ---------------------------------------------------------------------------
+node_modules/
+dist/
+dist-ssr/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# ---------------------------------------------------------------------------
+# Secrets — never commit. Real values live in .env.local (untracked) and in
+# Supabase project secrets; only .env.example (placeholders) may be tracked.
+# ---------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+*.local
+
+# ---------------------------------------------------------------------------
+# Internal / non-public working notes.
+#
+# CLAUDE.md stays at the repo ROOT (it must, to be auto-loaded as project
+# instructions) but is deliberately untracked: it contains client-IP notes,
+# third-party review feedback, infrastructure identifiers and candid internal
+# risk assessment. This repo is public — none of that should reach GitHub.
+# Untracked is enough to keep it off GitHub; moving it would break tooling.
+#
+# docs/internal/ is the home for any other non-public planning docs.
+# ---------------------------------------------------------------------------
+CLAUDE.md
+docs/internal/

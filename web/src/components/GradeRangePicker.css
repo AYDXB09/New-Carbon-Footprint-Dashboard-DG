@@ -1,0 +1,146 @@
+.grp {
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 0.7rem 0.8rem 0.6rem;
+  background: var(--paper);
+}
+
+.grp-toggle {
+  display: inline-flex;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 0.6rem;
+}
+.grp-toggle button {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.66rem;
+  font-weight: 600;
+  padding: 0.3rem 0.6rem;
+  border: none;
+  background: var(--surface);
+  color: var(--ink-faint);
+  cursor: pointer;
+}
+.grp-toggle button + button {
+  border-left: 1px solid var(--rule);
+}
+.grp-toggle button.on {
+  background: var(--blue);
+  color: var(--surface);
+}
+
+.grp-readout-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.7rem;
+}
+.grp-readout {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+.grp-wholeschool {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.66rem;
+  font-weight: 600;
+  color: var(--blue-ink);
+  background: none;
+  border: 1px solid var(--rule);
+  border-radius: 5px;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.grp-wholeschool:hover {
+  border-color: var(--blue);
+  background: var(--band);
+}
+
+/* Custom slider — no native <input type=range>, so handle position is
+   driven by the exact same pct() math as the fill/track, guaranteeing they
+   never disagree (the earlier native-dual-range version could visually
+   drift from its own overlay because the browser insets a native thumb's
+   travel range by half its own width). */
+.grp-slider {
+  position: relative;
+  height: 1.6rem;
+  margin: 0 0.15rem;
+  touch-action: none;
+}
+.grp-track {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 3px;
+  transform: translateY(-50%);
+  border-radius: 2px;
+  background: var(--rule);
+}
+.grp-fill {
+  position: absolute;
+  top: 50%;
+  height: 3px;
+  transform: translateY(-50%);
+  border-radius: 2px;
+  background: var(--blue);
+}
+.grp-tick {
+  position: absolute;
+  top: 50%;
+  width: 1px;
+  height: 6px;
+  transform: translate(-50%, -50%);
+  background: var(--rule);
+}
+.grp-handle {
+  position: absolute;
+  top: 50%;
+  width: 0.85rem;
+  height: 0.85rem;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid var(--blue);
+  cursor: grab;
+  z-index: 1;
+}
+.grp-handle.active {
+  cursor: grabbing;
+  box-shadow: 0 0 0 4px var(--band);
+}
+.grp-tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: var(--surface);
+  font-size: 0.62rem;
+  font-weight: 600;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.grp-tick-labels {
+  position: relative;
+  height: 0.9rem;
+  margin: 0.35rem 0.15rem 0;
+}
+.grp-tick-labels span {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  font-size: 0.6rem;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+.grp-tick-labels span.on {
+  color: var(--blue-ink);
+  font-weight: 600;
+}

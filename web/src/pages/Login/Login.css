@@ -1,0 +1,81 @@
+.login-shell {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+.login-card {
+  width: 100%;
+  max-width: 380px;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 2rem 2rem 1.8rem;
+  box-shadow: var(--shadow);
+}
+.login-card .brand {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 1.6rem;
+}
+.login-card .mark {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--blue);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+}
+.login-card span:not(.mark) {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 600;
+  font-size: 1.02rem;
+}
+.login-card h1 {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 600;
+  font-size: 1.4rem;
+  margin: 0 0 0.5rem;
+}
+.login-card p {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+  margin: 0 0 1.2rem;
+}
+.login-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+.login-card input {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 0.9rem;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 0.65rem 0.8rem;
+  color: var(--ink);
+}
+.login-card input:focus {
+  outline: 2px solid var(--blue);
+  outline-offset: 1px;
+}
+.login-card .btn {
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.65rem 1.1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+.login-card .btn-primary {
+  background: var(--blue);
+  color: var(--surface);
+}
+.login-error {
+  margin-top: 0.9rem;
+  font-size: 0.76rem;
+  color: var(--amber);
+}
