@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
 import "./Profile.css";
+import Sidebar from "../../components/Sidebar";
 import SchoolMap from "../../components/SchoolMap";
 import GradeRangePicker from "../../components/GradeRangePicker";
 import ContactCard from "../../components/ContactCard";
@@ -324,48 +324,7 @@ export default function Profile() {
 
   return (
     <div className="shell">
-      <aside className="side">
-        <div className="brand">
-          <span className="mark"></span>
-          <span>Groundwork</span>
-        </div>
-        <nav className="navgroup">
-          <span className="navlabel">Workspace</span>
-          <Link className="navitem" to="/">
-            <span className="dot"></span>Dashboard
-          </Link>
-          <Link className="navitem" to="/">
-            <span className="dot"></span>Energy
-          </Link>
-          <Link className="navitem" to="/">
-            <span className="dot"></span>Water
-          </Link>
-          <Link className="navitem" to="/">
-            <span className="dot"></span>Transportation
-          </Link>
-          <Link className="navitem" to="/">
-            <span className="dot"></span>Digital
-          </Link>
-          <Link className="navitem" to="/">
-            <span className="dot"></span>Waste
-          </Link>
-        </nav>
-        <nav className="navgroup">
-          <span className="navlabel">Compare</span>
-          <Link className="navitem" to="/">
-            <span className="dot"></span>Benchmarking
-          </Link>
-          <Link className="navitem" to="/">
-            <span className="dot"></span>Reports
-          </Link>
-        </nav>
-        <nav className="navgroup">
-          <span className="navlabel">Account</span>
-          <Link className="navitem active" to="/profile">
-            <span className="dot"></span>School profile
-          </Link>
-        </nav>
-      </aside>
+      <Sidebar active="profile" />
 
       <main className="main">
         <div className="pagehead">
