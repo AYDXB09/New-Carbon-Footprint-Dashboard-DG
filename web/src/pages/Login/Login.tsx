@@ -32,7 +32,7 @@ export default function Login() {
       <div className="login-card">
         <div className="brand">
           <span className="mark"></span>
-          <span>Groundwork</span>
+          <span>CarbonTally</span>
         </div>
         {sent ? (
           <>

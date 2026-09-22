@@ -29,7 +29,7 @@ export default function Sidebar({ active }: { active: NavKey }) {
     <aside className="side">
       <div className="brand">
         <span className="mark"></span>
-        <span>Groundwork</span>
+        <span>CarbonTally</span>
       </div>
       <nav className="navgroup">
         <span className="navlabel">Workspace</span>

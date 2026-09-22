@@ -1,4 +1,8 @@
-/* Groundwork — shared design tokens (field-ledger direction, chosen 2026-08-25) */
+/* CarbonTally — shared design tokens (Report card direction, chosen 2026-09-22,
+   replacing the field-ledger direction from 2026-08-25). Same variable names
+   as before on purpose — every component already reads these via var(...),
+   so swapping the values here re-themes the whole app without touching
+   component code. */
 :root {
   /* User-controllable text size, applied via lib/fontScale.ts + <FontScaleControl>.
      Because every font-size in the app is set in rem, scaling the root
@@ -6,59 +10,59 @@
      needed. Persisted to localStorage; 1 = the new, larger default (see
      html rule below), not the original baseline. */
   --font-scale: 1;
-  --paper: #E9EDE6;
-  --surface: #F6F8F3;
-  --surface-2: #DFE5D9;
-  --ink: #0E1411;
-  --ink-soft: #3D4A43;
-  --ink-faint: #6B7A72;
-  --rule: #C3CCBC;
-  --rule-soft: #D6DDD0;
-  --blue: #1F35B8;
-  --blue-ink: #1F35B8;
-  --acid: #B9D42E;
-  --acid-ink: #5C6B08;
-  --amber: #B5651D;
-  --amber-soft: #F0DCC2;
-  --band: rgba(31, 53, 184, 0.16);
-  --shadow: 0 1px 0 var(--rule), 0 18px 40px -30px rgba(14, 20, 17, 0.55);
+  --paper: #FBF7EE;
+  --surface: #FFFFFF;
+  --surface-2: #F3EDE0;
+  --ink: #1C1C1C;
+  --ink-soft: #665F52;
+  --ink-faint: #948A74;
+  --rule: #E8E0CE;
+  --rule-soft: #F1EAD9;
+  --blue: #B8481F;
+  --blue-ink: #B8481F;
+  --acid: #4C9A5B;
+  --acid-ink: #2F5D3A;
+  --amber: #F5A623;
+  --amber-soft: #FBEAD1;
+  --band: rgba(184, 72, 31, 0.16);
+  --shadow: 0 1px 0 var(--rule), 0 18px 40px -30px rgba(28, 20, 15, 0.35);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --paper: #0C100E;
-    --surface: #141A17;
-    --surface-2: #1C241F;
-    --ink: #E7EDE4;
-    --ink-soft: #AFBCB3;
-    --ink-faint: #7C8A82;
-    --rule: #2A342E;
-    --rule-soft: #212A24;
-    --blue: #8FA2FF;
-    --blue-ink: #A8B6FF;
-    --acid: #C9E23F;
-    --acid-ink: #C9E23F;
-    --amber: #E0A05C;
-    --amber-soft: #3A2A16;
-    --band: rgba(143, 162, 255, 0.22);
+    --paper: #171310;
+    --surface: #211C15;
+    --surface-2: #2A2118;
+    --ink: #F5F0E4;
+    --ink-soft: #B9AF9B;
+    --ink-faint: #8A8170;
+    --rule: #332C22;
+    --rule-soft: #2A2318;
+    --blue: #E58255;
+    --blue-ink: #E58255;
+    --acid: #5FB36E;
+    --acid-ink: #5FB36E;
+    --amber: #F5B347;
+    --amber-soft: #3A2E12;
+    --band: rgba(229, 130, 85, 0.22);
     --shadow: 0 1px 0 var(--rule), 0 22px 50px -34px rgba(0, 0, 0, 0.9);
   }
 }
 :root[data-theme="dark"] {
-  --paper: #0C100E;
-  --surface: #141A17;
-  --surface-2: #1C241F;
-  --ink: #E7EDE4;
-  --ink-soft: #AFBCB3;
-  --ink-faint: #7C8A82;
-  --rule: #2A342E;
-  --rule-soft: #212A24;
-  --blue: #8FA2FF;
-  --blue-ink: #A8B6FF;
-  --acid: #C9E23F;
-  --acid-ink: #C9E23F;
-  --amber: #E0A05C;
-  --amber-soft: #3A2A16;
-  --band: rgba(143, 162, 255, 0.22);
+  --paper: #171310;
+  --surface: #211C15;
+  --surface-2: #2A2118;
+  --ink: #F5F0E4;
+  --ink-soft: #B9AF9B;
+  --ink-faint: #8A8170;
+  --rule: #332C22;
+  --rule-soft: #2A2318;
+  --blue: #E58255;
+  --blue-ink: #E58255;
+  --acid: #5FB36E;
+  --acid-ink: #5FB36E;
+  --amber: #F5B347;
+  --amber-soft: #3A2E12;
+  --band: rgba(229, 130, 85, 0.22);
   --shadow: 0 1px 0 var(--rule), 0 22px 50px -34px rgba(0, 0, 0, 0.9);
 }
 
@@ -73,10 +77,10 @@ body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  font-family: "Work Sans", ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 ::selection { background: var(--band); }
-.mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+.mono { font-family: "Work Sans", ui-sans-serif, sans-serif; font-variant-numeric: tabular-nums; }
 a { color: inherit; }
 :focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }

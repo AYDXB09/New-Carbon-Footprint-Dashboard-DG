@@ -35,7 +35,7 @@
 }
 
 .contact-card .field input {
-  font-family: "IBM Plex Sans";
+  font-family: "Work Sans";
   font-size: 0.88rem;
   background: var(--paper);
   border: 1px solid var(--rule);
@@ -52,7 +52,7 @@
 }
 
 .optional-tag {
-  font-family: "IBM Plex Mono";
+  font-family: "Work Sans";
   font-size: 0.6rem;
   letter-spacing: 0.04em;
   padding: 0.14rem 0.42rem;

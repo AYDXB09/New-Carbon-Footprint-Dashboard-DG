@@ -4,11 +4,11 @@
   padding:1.4rem 1rem; display:flex; flex-direction:column; gap:1.8rem;
 }
 .brand{ display:flex; align-items:center; gap:0.55rem; padding:0 0.35rem; }
-.brand .mark{ width:16px; height:16px; border:2px solid var(--blue); transform:rotate(45deg); flex-shrink:0; }
-.brand span{ font-family:"Fraunces", Georgia, serif; font-weight:600; font-size:1.02rem; }
+.brand .mark{ width:18px; height:18px; border-radius:50%; background:var(--blue); background-image:radial-gradient(circle at 34% 28%, rgba(255,255,255,.55), transparent 45%); flex-shrink:0; }
+.brand span{ font-family:"Fredoka", sans-serif; font-weight:600; font-size:1.02rem; }
 
 .navgroup{ display:flex; flex-direction:column; gap:0.15rem; }
-.navlabel{ font-family:"IBM Plex Mono"; font-size:0.62rem; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-faint); padding:0 0.6rem; margin-bottom:0.35rem; }
+.navlabel{ font-family:"Work Sans"; font-size:0.62rem; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-faint); padding:0 0.6rem; margin-bottom:0.35rem; }
 .navitem{ display:flex; align-items:center; gap:0.6rem; padding:0.5rem 0.6rem; border-radius:6px; font-size:0.84rem; color:var(--ink-soft); text-decoration:none; }
 .navitem.active{ background:var(--surface-2); color:var(--ink); font-weight:600; }
 .navitem .dot{ width:5px; height:5px; border-radius:50%; background:var(--ink-faint); flex-shrink:0; }
