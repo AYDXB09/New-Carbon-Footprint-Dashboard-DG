@@ -1,18 +1,21 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import Sidebar from '../../components/Sidebar';
+import '../../components/Shell.css';
 import './Landing.css';
 
 const Landing = () => {
   useEffect(() => {
-    const btn = document.getElementById('themebtn');
-    const onClick = () => {
-      let cur = document.documentElement.getAttribute('data-theme');
-      if (!cur) {
-        cur = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      }
-      document.documentElement.setAttribute('data-theme', cur === 'dark' ? 'light' : 'dark');
-    };
-    btn?.addEventListener('click', onClick);
+    // Theme toggle now lives in <Sidebar> itself (shared across every page).
+
+    // The sidebar's marketing links (and Login's copy of it) are now real
+    // cross-page hrefs like "/#tiers" rather than same-page anchors, so a
+    // click can land here as a fresh mount with a hash already in the URL.
+    // The browser's native hash-scroll fires before React has rendered
+    // anything, so it always misses — do it ourselves once mounted.
+    if (window.location.hash) {
+      document.getElementById(window.location.hash.slice(1))?.scrollIntoView();
+    }
 
     let io: IntersectionObserver | undefined;
     const els = document.querySelectorAll('.rv');
@@ -29,42 +32,33 @@ const Landing = () => {
         },
         { rootMargin: '0px 0px -8% 0px', threshold: 0.12 }
       );
-      els.forEach((el) => io?.observe(el));
+      // A jump above (an instant scrollIntoView, not a smooth scroll a user
+      // drove themselves) can carry the page past sections before the
+      // observer exists to see them enter — nothing ever reports them as
+      // intersecting, so they'd sit invisible even after scrolling back.
+      // Anything already above the fold at mount time reveals immediately
+      // instead of waiting on the observer; only what's still below gets
+      // the scroll-triggered animation.
+      els.forEach((el) => {
+        if (el.getBoundingClientRect().top < window.innerHeight) {
+          el.classList.add('in');
+        } else {
+          io?.observe(el);
+        }
+      });
     } else {
       els.forEach((el) => el.classList.add('in'));
     }
 
     return () => {
-      btn?.removeEventListener('click', onClick);
       io?.disconnect();
     };
   }, []);
 
   return (
-    <>
-      <nav className="nav">
-        <div className="wrap nav-in">
-          <a className="mark" href="#top">
-            <span className="dot" aria-hidden="true" />
-            CarbonTally
-          </a>
-          <div className="navlinks">
-            <a href="#tiers">Data tiers</a>
-            <a href="#dashboard">Emissions dashboard</a>
-            <a href="#method">Methodology</a>
-            <a href="#benchmark">Why trust it</a>
-          </div>
-          <button className="themebtn" id="themebtn" aria-label="Toggle colour theme">
-            <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
-              <path d="M8 1.5a6.5 6.5 0 1 0 6.5 6.5A5 5 0 0 1 8 1.5Z" fill="currentColor" />
-            </svg>
-          </button>
-          <Link className="pill pill-sm" to="/login">
-            Start a school file
-          </Link>
-        </div>
-      </nav>
-
+    <div className="shell">
+      <Sidebar variant="marketing" />
+      <main>
       <header className="hero" id="top">
         <div className="wrap">
           <div className="herogrid">
@@ -558,7 +552,8 @@ const Landing = () => {
           </span>
         </footer>
       </div>
-    </>
+      </main>
+    </div>
   );
 };
 

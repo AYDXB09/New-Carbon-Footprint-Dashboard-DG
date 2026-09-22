@@ -1,5 +1,6 @@
-.login-shell {
-  min-height: 100vh;
+/* Brand mark now lives in <Sidebar variant="marketing"> — this page is just
+   the centered card inside the shared .shell > main grid cell. */
+.login-main {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -13,25 +14,6 @@
   border-radius: 18px;
   padding: 2rem 2rem 1.8rem;
   box-shadow: var(--shadow);
-}
-.login-card .brand {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  margin-bottom: 1.6rem;
-}
-.login-card .mark {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--blue);
-  background-image: radial-gradient(circle at 34% 28%, rgba(255, 255, 255, 0.55), transparent 45%);
-  flex-shrink: 0;
-}
-.login-card span:not(.mark) {
-  font-family: "Fredoka", sans-serif;
-  font-weight: 600;
-  font-size: 1.02rem;
 }
 .login-card h1 {
   font-family: "Fredoka", sans-serif;

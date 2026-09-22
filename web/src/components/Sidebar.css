@@ -2,8 +2,13 @@
 .side{
   background:var(--surface); border-right:1px solid var(--rule);
   padding:1.4rem 1rem; display:flex; flex-direction:column; gap:1.8rem;
+  /* Pinned to the viewport with its own scroll, independent of a page's
+     content length. Without this a grid row as tall as Landing's ~5000px
+     of scrolling content stretched the sidebar to match — the theme
+     toggle (margin-top:auto below) ended up 5000px down, off-screen. */
+  position:sticky; top:0; height:100vh; overflow-y:auto;
 }
-.brand{ display:flex; align-items:center; gap:0.55rem; padding:0 0.35rem; }
+.brand{ display:flex; align-items:center; gap:0.55rem; padding:0 0.35rem; text-decoration:none; color:var(--ink); }
 .brand .mark{ width:18px; height:18px; border-radius:50%; background:var(--blue); background-image:radial-gradient(circle at 34% 28%, rgba(255,255,255,.55), transparent 45%); flex-shrink:0; }
 .brand span{ font-family:"Fredoka", sans-serif; font-weight:600; font-size:1.02rem; }
 
@@ -13,3 +18,21 @@
 .navitem.active{ background:var(--surface-2); color:var(--ink); font-weight:600; }
 .navitem .dot{ width:5px; height:5px; border-radius:50%; background:var(--ink-faint); flex-shrink:0; }
 .navitem.active .dot{ background:var(--blue); }
+.navitem:hover{ color:var(--ink); }
+
+/* marketing variant only: the "Start a school file" CTA and the anchor
+   links above it reuse .navitem, so they already match; this just styles
+   the button and pins the theme toggle to the bottom of the sidebar. */
+.sidecta{ padding:0 0.6rem; }
+.sidecta .btn{
+  display:flex; align-items:center; justify-content:center; width:100%;
+  background:var(--blue); color:#fff; text-decoration:none; font-weight:700;
+  font-size:0.84rem; padding:0.65rem 0.9rem; border-radius:24px;
+}
+.themebtn{
+  margin-top:auto; align-self:flex-start; margin-left:0.35rem;
+  background:none; border:1.5px solid var(--rule); color:var(--ink-soft);
+  border-radius:50%; width:32px; height:32px; display:grid; place-items:center;
+  cursor:pointer;
+}
+.themebtn:hover{ border-color:var(--ink); color:var(--ink); }

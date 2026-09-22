@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Navigate } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
 import { useAuth } from "../../lib/auth";
+import Sidebar from "../../components/Sidebar";
+import "../../components/Shell.css";
 import "./Login.css";
 
 export default function Login() {
@@ -28,12 +30,10 @@ export default function Login() {
   }
 
   return (
-    <div className="login-shell">
+    <div className="shell">
+      <Sidebar variant="marketing" />
+      <main className="login-main">
       <div className="login-card">
-        <div className="brand">
-          <span className="mark"></span>
-          <span>CarbonTally</span>
-        </div>
         {sent ? (
           <>
             <h1>Check your email</h1>
@@ -61,6 +61,7 @@ export default function Login() {
           </>
         )}
       </div>
+      </main>
     </div>
   );
 }

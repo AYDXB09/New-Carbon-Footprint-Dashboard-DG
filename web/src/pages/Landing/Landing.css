@@ -28,8 +28,8 @@ body{background:var(--lp-paper);color:var(--lp-ink)}
 .wrap{max-width:1040px;margin:0 auto;padding:0 22px}
 @media(max-width:680px){.wrap{padding:0 18px}}
 
-.nav,.hero,.sec,.wrap > footer{font-family:'Work Sans',"Helvetica Neue",Helvetica,Arial,sans-serif}
-.hero h1,.hero h2,section.sec h2,section.sec h3,.tname,.mark,.dashtotal b,.ctacard h2,blockquote{font-family:'Fredoka',sans-serif;font-weight:600}
+.hero,.sec,.wrap > footer{font-family:'Work Sans',"Helvetica Neue",Helvetica,Arial,sans-serif}
+.hero h1,.hero h2,section.sec h2,section.sec h3,.tname,.dashtotal b,.ctacard h2,blockquote{font-family:'Fredoka',sans-serif;font-weight:600}
 img,svg{display:block}
 a{color:inherit}
 section.sec p,.hero .lede{margin:0}
@@ -41,19 +41,8 @@ section.sec p,.hero .lede{margin:0}
   .rv{opacity:1;transform:none;transition:none}
 }
 
-/* ---------- nav ---------- */
-.nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb, var(--lp-paper) 88%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--lp-rule)}
-.nav-in{display:flex;align-items:center;gap:22px;height:70px}
-.mark{display:flex;align-items:center;gap:9px;font-size:19px;text-decoration:none;color:var(--lp-ink)}
-.mark .dot{width:24px;height:24px;border-radius:50%;background:var(--lp-brand);background-image:radial-gradient(circle at 34% 28%, rgba(255,255,255,.55), transparent 45%)}
-.navlinks{display:flex;gap:22px;margin-left:auto;font-size:13.5px;font-weight:600}
-.navlinks a{text-decoration:none;color:var(--lp-ink-soft)}
-.navlinks a:hover{color:var(--lp-ink)}
-@media(max-width:820px){.navlinks{display:none}}
-.themebtn{margin-left:auto;background:none;border:1.5px solid var(--lp-rule);color:var(--lp-ink-soft);border-radius:50%;width:34px;height:34px;display:grid;place-items:center;cursor:pointer}
-.navlinks + .themebtn{margin-left:0}
-.themebtn:hover{border-color:var(--lp-ink);color:var(--lp-ink)}
-
+/* Nav is <Sidebar variant="marketing"> now (components/Sidebar.css) — this
+   page only supplies the .pill button styling its own links still use. */
 .pill{display:inline-flex;align-items:center;gap:8px;background:var(--lp-brand);color:#fff;text-decoration:none;font-weight:700;font-size:13.5px;padding:10px 18px;border-radius:24px;border:none;cursor:pointer}
 .pill.ghost{background:transparent;color:var(--lp-ink);border:1.5px solid var(--lp-rule)}
 .pill-sm{padding:8px 15px;font-size:13px}
