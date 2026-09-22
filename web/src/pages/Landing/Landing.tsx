@@ -21,7 +21,7 @@ const Landing = () => {
         (es) => {
           es.forEach((e, i) => {
             if (e.isIntersecting) {
-              (e.target as HTMLElement).style.transitionDelay = Math.min(i * 70, 280) + 'ms';
+              (e.target as HTMLElement).style.transitionDelay = Math.min(i * 60, 260) + 'ms';
               e.target.classList.add('in');
               io?.unobserve(e.target);
             }
@@ -45,26 +45,21 @@ const Landing = () => {
       <nav className="nav">
         <div className="wrap nav-in">
           <a className="mark" href="#top">
-            <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
-              <rect x="1" y="1" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.2" />
-              <line x1="1" y1="14.5" x2="21" y2="14.5" stroke="currentColor" strokeWidth="1.2" />
-              <rect x="5" y="8" width="4" height="6.5" fill="var(--acid)" />
-              <rect x="12" y="4.5" width="4" height="10" fill="none" stroke="currentColor" strokeWidth="1.2" />
-            </svg>
-            Groundwork
+            <span className="dot" aria-hidden="true" />
+            CarbonTally
           </a>
-          <div className="nav-links">
-            <a href="#tiers">Tiers</a>
-            <a href="#dashboard">The number</a>
-            <a href="#method">Method</a>
-            <a href="#benchmark">Benchmarking</a>
+          <div className="navlinks">
+            <a href="#tiers">Data tiers</a>
+            <a href="#dashboard">Emissions dashboard</a>
+            <a href="#method">Methodology</a>
+            <a href="#benchmark">Why trust it</a>
           </div>
           <button className="themebtn" id="themebtn" aria-label="Toggle colour theme">
-            <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
               <path d="M8 1.5a6.5 6.5 0 1 0 6.5 6.5A5 5 0 0 1 8 1.5Z" fill="currentColor" />
             </svg>
           </button>
-          <Link className="btn btn-sm" to="/login" style={{ marginLeft: '14px' }}>
+          <Link className="pill pill-sm" to="/login">
             Start a school file
           </Link>
         </div>
@@ -72,403 +67,337 @@ const Landing = () => {
 
       <header className="hero" id="top">
         <div className="wrap">
-          <div className="hero-grid">
+          <div className="herogrid">
             <div>
               <div className="eyebrow">Carbon accounting for physical schools</div>
-              <h1 style={{ marginTop: '22px' }}>
-                Report what you
+              <h1>
+                Report what you <mark>actually know</mark>.
                 <br />
-                <span className="em">actually</span> <span className="mk">know</span>.
-                <br />
-                Estimate the rest — <span className="em">visibly</span>.
+                Estimate the rest — <em>visibly</em>.
               </h1>
               <p className="lede">
-                Most school sustainability tools grade a whole campus at one level of rigour, so the weakest data
-                drags down everything. Groundwork lets each of five categories sit at <b>its own data tier</b> —
-                meter-level on energy, back-of-envelope on transport — and shows the{' '}
-                <b>uncertainty that follows from that choice</b> instead of hiding it behind a single tidy figure.
+                Most tools grade a whole campus at one rigour level, so the weakest data drags everything down.
+                CarbonTally lets each category sit at <b>its own data tier</b> — meter-level on energy,
+                back-of-envelope on transport — and shows <b>the uncertainty that comes with that choice</b>,
+                instead of hiding it behind one tidy figure.
               </p>
-              <div className="hero-cta">
-                <Link className="btn" to="/login">
+              <div className="herocta">
+                <Link className="pill" to="/login">
                   Start a school file
-                  <svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true">
-                    <path d="M1 7h11M7.5 2.5 12 7l-4.5 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
+                  <svg width="12" height="12" viewBox="0 0 14 14" aria-hidden="true">
+                    <path d="M1 7h11M7.5 2.5 12 7l-4.5 4.5" fill="none" stroke="currentColor" strokeWidth="1.8" />
                   </svg>
                 </Link>
-                <a className="btn ghost" href="#method">
+                <a className="pill ghost" href="#method">
                   Read the method
                 </a>
-                <span className="hero-note">No procurement call. Start with one utility bill.</span>
+              </div>
+              <div className="heronote" style={{ marginTop: '12px' }}>
+                No procurement call. Start with one utility bill.
               </div>
             </div>
 
-            <figure className="hero-fig rv">
+            <figure className="figcard rv">
               <svg
-                viewBox="0 0 460 268"
+                viewBox="0 0 420 250"
                 width="100%"
                 role="img"
                 aria-label="Chart showing five emission categories, each with a confidence range that narrows as the data tier improves"
               >
-                <defs>
-                  <pattern id="hatch" width="5" height="5" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
-                    <line x1="0" y1="0" x2="0" y2="5" stroke="var(--blue)" strokeWidth="2.4" opacity=".28" />
-                  </pattern>
-                </defs>
-                <g fontFamily="IBM Plex Mono, monospace" fontSize="9.5" fill="var(--ink-faint)" letterSpacing="1">
-                  <text x="0" y="12">tCO₂e</text>
-                  <text x="404" y="12">TIER</text>
+                <g fontFamily="Work Sans" fontSize="9.5" fill="var(--lp-ink-faint)" fontWeight="700" letterSpacing=".5">
+                  <text x="0" y="12">TCO₂E</text>
+                  <text x="382" y="12">TIER</text>
                 </g>
-                {/* axis */}
-                <line x1="0" y1="232" x2="460" y2="232" stroke="var(--rule)" strokeWidth="1" />
-                <g stroke="var(--rule-soft)" strokeWidth="1" strokeDasharray="2 4">
-                  <line x1="110" y1="26" x2="110" y2="232" />
-                  <line x1="200" y1="26" x2="200" y2="232" />
-                  <line x1="290" y1="26" x2="290" y2="232" />
-                  <line x1="380" y1="26" x2="380" y2="232" />
+                <line x1="0" y1="214" x2="420" y2="214" stroke="var(--lp-rule)" />
+                <g stroke="var(--lp-rule)" strokeWidth="1" strokeDasharray="2 4">
+                  <line x1="98" y1="24" x2="98" y2="214" />
+                  <line x1="182" y1="24" x2="182" y2="214" />
+                  <line x1="266" y1="24" x2="266" y2="214" />
+                  <line x1="350" y1="24" x2="350" y2="214" />
                 </g>
-                {/* rows */}
-                <g fontFamily="IBM Plex Sans, sans-serif" fontSize="11" fill="var(--ink)">
-                  <g>
-                    <text x="0" y="45">Energy</text>
-                    <rect x="110" y="36" width="66" height="12" fill="var(--band)" />
-                    <rect x="139" y="33" width="3" height="18" fill="var(--blue)" />
-                    <text x="404" y="46" fontFamily="IBM Plex Mono, monospace" fontSize="9.5" fill="var(--blue-ink)">T3</text>
-                  </g>
-                  <g>
-                    <text x="0" y="85">Water</text>
-                    <rect x="128" y="76" width="96" height="12" fill="var(--band)" />
-                    <rect x="172" y="73" width="3" height="18" fill="var(--blue)" />
-                    <text x="404" y="86" fontFamily="IBM Plex Mono, monospace" fontSize="9.5" fill="var(--blue-ink)">T2</text>
-                  </g>
-                  <g>
-                    <text x="0" y="125">Transport</text>
-                    <rect x="132" y="116" width="236" height="12" fill="url(#hatch)" />
-                    <rect x="132" y="116" width="236" height="12" fill="none" stroke="var(--blue)" strokeWidth="1" strokeDasharray="3 3" opacity=".7" />
-                    <rect x="238" y="113" width="3" height="18" fill="var(--blue)" />
-                    <text x="404" y="126" fontFamily="IBM Plex Mono, monospace" fontSize="9.5" fill="var(--ink-faint)">T1</text>
-                  </g>
-                  <g>
-                    <text x="0" y="165">Digital</text>
-                    <rect x="104" y="156" width="120" height="12" fill="var(--band)" />
-                    <rect x="152" y="153" width="3" height="18" fill="var(--blue)" />
-                    <text x="404" y="166" fontFamily="IBM Plex Mono, monospace" fontSize="9.5" fill="var(--blue-ink)">T2</text>
-                  </g>
-                  <g>
-                    <text x="0" y="205">Waste</text>
-                    <rect x="112" y="196" width="196" height="12" fill="url(#hatch)" />
-                    <rect x="112" y="196" width="196" height="12" fill="none" stroke="var(--blue)" strokeWidth="1" strokeDasharray="3 3" opacity=".7" />
-                    <rect x="190" y="193" width="3" height="18" fill="var(--blue)" />
-                    <text x="404" y="206" fontFamily="IBM Plex Mono, monospace" fontSize="9.5" fill="var(--ink-faint)">T1</text>
-                  </g>
+                <g fontFamily="Work Sans" fontSize="11.5" fontWeight="700" fill="var(--lp-ink)">
+                  <rect x="0" y="35" width="9" height="9" rx="2" fill="var(--lp-amber)" />
+                  <text x="15" y="43">Energy</text>
+                  <rect x="98" y="34" width="60" height="12" rx="2" fill="var(--lp-amber)" />
+                  <rect x="124" y="31" width="3" height="18" fill="var(--lp-ink)" />
+                  <text x="382" y="44" fontSize="9.5" fill="var(--lp-amber)">T3</text>
+
+                  <rect x="0" y="75" width="9" height="9" rx="2" fill="var(--lp-sky)" />
+                  <text x="15" y="83">Water</text>
+                  <rect x="116" y="74" width="88" height="12" rx="2" fill="var(--lp-sky)" />
+                  <rect x="156" y="71" width="3" height="18" fill="var(--lp-ink)" />
+                  <text x="382" y="84" fontSize="9.5" fill="var(--lp-sky)">T2</text>
+
+                  <rect x="0" y="115" width="9" height="9" rx="2" fill="var(--lp-coral)" />
+                  <text x="15" y="123">Transport</text>
+                  <rect x="120" y="114" width="216" height="12" rx="2" fill="var(--lp-coral)" opacity=".25" />
+                  <rect x="120" y="114" width="216" height="12" rx="2" fill="none" stroke="var(--lp-coral)" strokeWidth="1" strokeDasharray="3 3" />
+                  <rect x="220" y="111" width="3" height="18" fill="var(--lp-ink)" />
+                  <text x="382" y="124" fontSize="9.5" fill="var(--lp-coral)">T1</text>
+
+                  <rect x="0" y="155" width="9" height="9" rx="2" fill="var(--lp-violet)" />
+                  <text x="15" y="163">Digital</text>
+                  <rect x="94" y="154" width="110" height="12" rx="2" fill="var(--lp-violet)" />
+                  <rect x="140" y="151" width="3" height="18" fill="var(--lp-ink)" />
+                  <text x="382" y="164" fontSize="9.5" fill="var(--lp-violet)">T2</text>
+
+                  <rect x="0" y="195" width="9" height="9" rx="2" fill="var(--lp-moss)" />
+                  <text x="15" y="203">Waste</text>
+                  <rect x="102" y="194" width="180" height="12" rx="2" fill="var(--lp-moss)" opacity=".25" />
+                  <rect x="102" y="194" width="180" height="12" rx="2" fill="none" stroke="var(--lp-moss)" strokeWidth="1" strokeDasharray="3 3" />
+                  <rect x="174" y="191" width="3" height="18" fill="var(--lp-ink)" />
+                  <text x="382" y="204" fontSize="9.5" fill="var(--lp-moss)">T1</text>
                 </g>
-                <g fontFamily="IBM Plex Mono, monospace" fontSize="9" fill="var(--ink-faint)">
-                  <text x="102" y="246">40</text>
-                  <text x="192" y="246">80</text>
-                  <text x="282" y="246">120</text>
-                  <text x="372" y="246">160</text>
+                <g fontFamily="Work Sans" fontSize="9" fill="var(--lp-ink-faint)">
+                  <text x="92" y="228">40</text>
+                  <text x="176" y="228">80</text>
+                  <text x="256" y="228">120</text>
+                  <text x="340" y="228">160</text>
                 </g>
-                <g>
-                  <line x1="0" y1="258" x2="16" y2="258" stroke="var(--blue)" strokeWidth="10" opacity=".16" />
-                  <text x="22" y="261" fontFamily="IBM Plex Mono, monospace" fontSize="9" fill="var(--ink-faint)">MEASURED RANGE</text>
-                  <rect x="150" y="253" width="16" height="10" fill="url(#hatch)" />
-                  <text x="172" y="261" fontFamily="IBM Plex Mono, monospace" fontSize="9" fill="var(--ink-faint)">MODELLED RANGE</text>
+                <g fontFamily="Work Sans" fontSize="9" fill="var(--lp-ink-faint)">
+                  <rect x="0" y="240" width="12" height="8" rx="2" fill="var(--lp-ink)" opacity=".7" />
+                  <text x="17" y="247">MEASURED</text>
+                  <rect x="98" y="240" width="12" height="8" rx="2" fill="var(--lp-ink)" opacity=".2" stroke="var(--lp-ink)" strokeWidth=".6" strokeDasharray="2 2" />
+                  <text x="115" y="247">MODELLED (TIER 1)</text>
                 </g>
               </svg>
-              <figcaption>
-                Illustrative output. Each bar is a simulated confidence range, not a point estimate — the hatched
-                bars are categories still sitting on Tier 1 inputs, and they look uncertain because they are.
+              <figcaption className="figcap">
+                Illustrative. Each bar is a simulated range, not a point — the dashed bars are still on Tier 1
+                inputs, and look uncertain because they are.
               </figcaption>
             </figure>
           </div>
 
-          <div className="hero-tail">
-            <div className="fact rv">
-              <span className="n">5</span>
-              <span className="t">Categories: energy, water, transportation, digital, waste. Turn on only the ones you can currently answer.</span>
+          <div className="stats3">
+            <div className="stat3 rv">
+              <div className="sn">5</div>
+              <span className="st">Categories — energy, water, transport, digital, waste. Turn on only what you can answer.</span>
             </div>
-            <div className="fact rv">
-              <span className="n">
-                3 <em>× per category</em>
-              </span>
-              <span className="t">Tiers of data quality, set independently. Nothing forces the whole school down to its weakest source.</span>
+            <div className="stat3 rv">
+              <div className="sn">
+                3<small>× per category</small>
+              </div>
+              <span className="st">Tiers of data quality, set independently per category.</span>
             </div>
-            <div className="fact rv">
-              <span className="n">
-                0 <em>schools so far</em>
-              </span>
-              <span className="t">Pre-launch, and we'd rather say so. There is no peer cohort yet — the benchmarking layer stays switched off until there honestly is one.</span>
+            <div className="stat3 rv">
+              <div className="sn">
+                0<small>schools so far</small>
+              </div>
+              <span className="st">Pre-launch. No peer cohort yet, so benchmarking stays off until there honestly is one.</span>
             </div>
           </div>
         </div>
       </header>
 
-      <section id="tiers">
+      <section className="sec" id="tiers">
         <div className="wrap">
           <div className="sec-head rv">
             <div className="eyebrow">Breadth × depth</div>
             <h2>One grade for the whole building is the wrong shape for a school.</h2>
             <p>
-              The facilities office has twelve months of half-hourly meter data. Nobody has ever surveyed how the
-              Year 8s get to school. Those two facts should not have to average into a single credibility score —
-              so here they don't.
+              Twelve months of meter data and a transport survey that's never once been run shouldn't average into
+              the same score. So here, they don't.
             </p>
           </div>
 
-          <div className="two rv">
-            <div className="panel">
-              <div className="kick">How it usually goes</div>
-              <h3>A single rigour setting</h3>
-              <p className="strike">
-                Pick "simple" and your good energy data is thrown away. Pick "comprehensive" and you're blocked at
-                the first field you can't fill — usually a commuting question no school has ever been asked before.
+          <div className="compare">
+            <div className="ccard bad rv">
+              <div className="cicon">
+                <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" /></svg>
+              </div>
+              <div className="ctag">The usual way</div>
+              <h3>One rigour setting for everything</h3>
+              <p>
+                "Simple" throws away your good energy data. "Comprehensive" blocks you on the first question no
+                school's ever answered. Either way: one number, no stated error.
               </p>
-              <p className="strike">The output is one number with no stated error, which is exactly the number a board member will ask you to defend.</p>
             </div>
-            <div className="panel b">
-              <div className="kick">How Groundwork goes</div>
-              <h3>A tier per category, changeable any week</h3>
+            <div className="ccard good rv">
+              <div className="cicon">
+                <svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7" fill="none" stroke="#fff" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              </div>
+              <div className="ctag">The CarbonTally way</div>
+              <h3>A tier per category, any week</h3>
               <p>
-                Upload the electricity bills today and energy jumps to Tier 2 on its own. Run a mode-share survey
-                in March and transportation moves up while nothing else is touched.
-              </p>
-              <p>
-                Every category carries its tier as a visible badge, and the confidence range around its number
-                widens or narrows to match. Improving your data is something you can literally watch happen.
+                Bills in today, energy jumps to Tier 2. Survey in March, transport moves up — nothing else touched.
+                Every badge stays visible, and its range matches it.
               </p>
             </div>
           </div>
 
-          <div className="matrix rv">
-            <table>
-              <thead>
-                <tr>
-                  <th>Category</th>
-                  <th>Tier 1 — Estimate</th>
-                  <th>Tier 2 — Actual totals</th>
-                  <th>Tier 3 — Granular</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="live">
-                  <td className="cat">
-                    Energy
-                    <span>Live first</span>
-                  </td>
-                  <td className="cell">
-                    <span className="pip">FLOOR AREA + ROLL</span>
-                    <br />
-                    Peer-median intensity applied as a proxy. Wide band.
-                  </td>
-                  <td className="cell">
-                    <span className="pip">ANNUAL BILL TOTALS</span>
-                    <br />
-                    Twelve months of kWh as billed. What most schools can find in an afternoon.
-                  </td>
-                  <td className="cell">
-                    <span className="pip">MONTHLY / MULTI-METER</span>
-                    <br />
-                    Per-meter reads with period dates. Tightest band available.
-                  </td>
-                </tr>
-                <tr>
-                  <td className="cat">
-                    Water
-                    <span>Next</span>
-                  </td>
-                  <td className="cell">
-                    <span className="pip">LITRES PER PUPIL</span>
-                    <br />
-                    Regional per-pupil-day figure × enrolment.
-                  </td>
-                  <td className="cell">
-                    <span className="pip">ANNUAL SUPPLY BILL</span>
-                    <br />
-                    Billed volume, split by metered supply point.
-                  </td>
-                  <td className="cell">
-                    <span className="pip">SUB-METERED</span>
-                    <br />
-                    Irrigation, catering and sanitary loads separated.
-                  </td>
-                </tr>
-                <tr>
-                  <td className="cat">
-                    Transportation
-                    <span>Novel ground</span>
-                  </td>
-                  <td className="cell">
-                    <span className="pip">REGIONAL PROXY</span>
-                    <br />
-                    One dropdown for setting and catchment size.
-                  </td>
-                  <td className="cell">
-                    <span className="pip">MODE-SHARE SURVEY</span>
-                    <br />
-                    Annual survey plus postcode distance bands. Needs 60% response to count.
-                  </td>
-                  <td className="cell">
-                    <span className="pip">TERMLY + TELEMETRY</span>
-                    <br />
-                    Repeat surveys and route-level fleet data.
-                  </td>
-                </tr>
-                <tr>
-                  <td className="cat">
-                    Digital
-                    <span>Engine exists</span>
-                  </td>
-                  <td className="cell">
-                    <span className="pip">DEVICE COUNT</span>
-                    <br />
-                    Fleet size × typical duty-cycle assumptions.
-                  </td>
-                  <td className="cell">
-                    <span className="pip">PLATFORM EXPORTS</span>
-                    <br />
-                    Real hours from the tools you already licence.
-                  </td>
-                  <td className="cell">
-                    <span className="pip">PER-COHORT USAGE</span>
-                    <br />
-                    Device-hours and streaming split by year group.
-                  </td>
-                </tr>
-                <tr>
-                  <td className="cat">
-                    Waste &amp; food
-                    <span>Later</span>
-                  </td>
-                  <td className="cell">
-                    <span className="pip">COVERS SERVED</span>
-                    <br />
-                    Meals per day against a published diet-emissions dataset.
-                  </td>
-                  <td className="cell">
-                    <span className="pip">CONTRACTOR TONNAGE</span>
-                    <br />
-                    Collection weights by stream from your waste contract.
-                  </td>
-                  <td className="cell">
-                    <span className="pip">AUDITED STREAMS</span>
-                    <br />
-                    Bin audits and menu-level procurement data.
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div className="tgrid">
+            <div className="tcard hero-card rv">
+              <div className="thead">
+                <div className="ticon" style={{ background: 'var(--lp-amber)' }}>
+                  <svg viewBox="0 0 24 24"><path d="M13 2 3 14h6l-1 8 10-12h-6l1-8Z" /></svg>
+                </div>
+                <div>
+                  <div className="tname">Energy</div>
+                  <span className="tstatus" style={{ background: 'var(--lp-amber)' }}>Live first</span>
+                </div>
+              </div>
+              <div className="ttrack">
+                <div className="tseg"><small>Tier 1</small>Floor area + roll</div>
+                <div className="tseg"><small>Tier 2</small>Annual bill totals</div>
+                <div className="tseg"><small>Tier 3</small>Monthly / multi-meter</div>
+              </div>
+            </div>
+
+            <div className="fourgrid">
+              <div className="tcard rv">
+                <div className="thead">
+                  <div className="ticon" style={{ background: 'var(--lp-sky)' }}>
+                    <svg viewBox="0 0 24 24"><path d="M12 2C12 2 5 12 5 16.5A7 7 0 0 0 19 16.5C19 12 12 2 12 2Z" /></svg>
+                  </div>
+                  <div>
+                    <div className="tname">Water</div>
+                    <span className="tstatus" style={{ background: 'var(--lp-sky)' }}>Next</span>
+                  </div>
+                </div>
+                <div className="ttrack">
+                  <div className="tseg"><small>T1</small>Litres per pupil</div>
+                  <div className="tseg"><small>T2</small>Annual supply bill</div>
+                  <div className="tseg"><small>T3</small>Sub-metered</div>
+                </div>
+              </div>
+              <div className="tcard rv">
+                <div className="thead">
+                  <div className="ticon" style={{ background: 'var(--lp-coral)' }}>
+                    <svg viewBox="0 0 24 24">
+                      <rect x="3" y="6" width="18" height="11" rx="2" />
+                      <path d="M6 9h3M10.5 9h3M15 9h3M7 20l-1-3M17 20l1-3" stroke="var(--lp-coral)" strokeWidth="1.4" />
+                      <circle cx="7.5" cy="19" r="1.6" fill="var(--lp-coral)" />
+                      <circle cx="16.5" cy="19" r="1.6" fill="var(--lp-coral)" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="tname">Transportation</div>
+                    <span className="tstatus" style={{ background: 'var(--lp-coral)' }}>Novel ground</span>
+                  </div>
+                </div>
+                <div className="ttrack">
+                  <div className="tseg"><small>T1</small>Regional proxy</div>
+                  <div className="tseg"><small>T2</small>Mode-share survey</div>
+                  <div className="tseg"><small>T3</small>Termly + telemetry</div>
+                </div>
+              </div>
+              <div className="tcard rv">
+                <div className="thead">
+                  <div className="ticon" style={{ background: 'var(--lp-violet)' }}>
+                    <svg viewBox="0 0 24 24">
+                      <rect x="3" y="4" width="18" height="12" rx="1.5" />
+                      <path d="M9 19h6M12 16v3" stroke="var(--lp-violet)" strokeWidth="1.4" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="tname">Digital</div>
+                    <span className="tstatus" style={{ background: 'var(--lp-violet)' }}>Engine exists</span>
+                  </div>
+                </div>
+                <div className="ttrack">
+                  <div className="tseg"><small>T1</small>Device count</div>
+                  <div className="tseg"><small>T2</small>Platform exports</div>
+                  <div className="tseg"><small>T3</small>Per-cohort usage</div>
+                </div>
+              </div>
+              <div className="tcard rv">
+                <div className="thead">
+                  <div className="ticon" style={{ background: 'var(--lp-moss)' }}>
+                    <svg viewBox="0 0 24 24">
+                      <path d="M6 6h12M9 6l.6-2h4.8l.6 2M7 6l1 14a1.5 1.5 0 0 0 1.5 1.4h5A1.5 1.5 0 0 0 16 20l1-14" stroke="#fff" strokeWidth="1.4" fill="none" />
+                      <path d="M10 10v7M14 10v7" stroke="#fff" strokeWidth="1.4" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="tname">Waste &amp; food</div>
+                    <span className="tstatus" style={{ background: 'var(--lp-moss)' }}>Later</span>
+                  </div>
+                </div>
+                <div className="ttrack">
+                  <div className="tseg"><small>T1</small>Covers served</div>
+                  <div className="tseg"><small>T2</small>Contractor tonnage</div>
+                  <div className="tseg"><small>T3</small>Audited streams</div>
+                </div>
+              </div>
+            </div>
           </div>
-          <p className="matrix-note">
-            Green row is what's being built first. The rest are specified, not shipped — and the product will say
-            so inside the app rather than showing a greyed-out tab that implies otherwise.
+          <p className="footnote">
+            Energy is what's being built first — its track is solid. The rest are designed, not shipped, so their
+            tracks stay dashed; the app says so plainly instead of a greyed-out tab that implies otherwise.
           </p>
         </div>
       </section>
 
-      <section id="dashboard">
+      <section className="sec" id="dashboard">
         <div className="wrap">
           <div className="sec-head rv">
             <div className="eyebrow">The number, and its edges</div>
             <h2>Every figure arrives as a range, because every input is one.</h2>
             <p>
-              Emission factors are published as intervals, not constants. Groundwork simulates across those
-              intervals thousands of times and reports the spread that comes back. A Tier 1 category produces a
-              wide band automatically; a Tier 3 one produces a narrow band automatically. There is no separate
-              confidence score to argue about — the width <i>is</i> the score.
+              Emission factors are published as intervals, not constants — CarbonTally simulates across them
+              thousands of times and reports the spread. Tier 1 makes a wide band automatically; Tier 3 makes a
+              narrow one. <i>The width is the confidence score.</i>
             </p>
           </div>
 
-          <div className="dash rv">
-            <div className="dash-bar">
-              <span className="dot"></span>
-              <span className="dot"></span>
-              <span className="dot"></span>
-              <span className="mono" style={{ marginLeft: '8px' }}>
-                Northfield Academy &nbsp;·&nbsp; 01 Sep 2025 → 31 Aug 2026 &nbsp;·&nbsp; 12 months
-              </span>
+          <div className="dashcard rv">
+            <div className="dashtop">
+              <span className="dots"><i></i><i></i><i></i></span>
+              Northfield Academy · 01 Sep 2025 → 31 Aug 2026 · 12 months
             </div>
-            <div className="dash-body">
-              <div className="dash-left">
-                <div className="total">
-                  <span className="big">1,184</span>
-                  <span className="pm">tCO₂e &nbsp;·&nbsp; 90% range 1,046 – 1,392 &nbsp;·&nbsp; ±14.6%</span>
+            <div className="dashbody">
+              <div className="dashleft">
+                <div className="dashtotal">
+                  <b>1,184</b>
+                  <span>tCO₂e · 90% range 1,046–1,392 · ±14.6%</span>
                 </div>
-                <p style={{ fontSize: '13.5px', color: 'var(--ink-faint)', marginBottom: '8px' }}>
-                  Sample school. Figures are illustrative.
-                </p>
-                <hr className="rule" style={{ margin: '14px 0 4px' }} />
+                <div className="dashsub">Sample school. Figures are illustrative.</div>
 
-                <div className="row">
-                  <div className="name">
-                    Energy <span className="tierbadge t3">T3</span>
-                  </div>
-                  <svg viewBox="0 0 300 20" width="100%" height="20" aria-hidden="true">
-                    <line x1="0" y1="10" x2="300" y2="10" stroke="var(--rule-soft)" />
-                    <rect x="52" y="4" width="44" height="12" fill="var(--band)" />
-                    <rect x="72" y="1" width="2.5" height="18" fill="var(--blue)" />
-                  </svg>
-                  <div className="val">612 ±4%</div>
+                <div className="drow">
+                  <div className="dn"><i style={{ background: 'var(--lp-amber)' }}></i>Energy</div>
+                  <div className="bartrack"><div className="barfill" style={{ left: '17%', width: '15%', background: 'var(--lp-amber)' }}></div></div>
+                  <div className="dv">612 ±4%</div>
                 </div>
-                <div className="row">
-                  <div className="name">
-                    Transport <span className="tierbadge">T1</span>
-                  </div>
-                  <svg viewBox="0 0 300 20" width="100%" height="20" aria-hidden="true">
-                    <line x1="0" y1="10" x2="300" y2="10" stroke="var(--rule-soft)" />
-                    <rect x="46" y="4" width="176" height="12" fill="var(--band)" stroke="var(--blue)" strokeDasharray="3 3" strokeWidth="1" />
-                    <rect x="126" y="1" width="2.5" height="18" fill="var(--blue)" />
-                  </svg>
-                  <div className="val">318 ±41%</div>
+                <div className="drow">
+                  <div className="dn"><i style={{ background: 'var(--lp-coral)' }}></i>Transport</div>
+                  <div className="bartrack"><div className="barfill" style={{ left: '15%', width: '59%', background: 'var(--lp-coral)', opacity: 0.55 }}></div></div>
+                  <div className="dv">318 ±41%</div>
                 </div>
-                <div className="row">
-                  <div className="name">
-                    Water <span className="tierbadge t2">T2</span>
-                  </div>
-                  <svg viewBox="0 0 300 20" width="100%" height="20" aria-hidden="true">
-                    <line x1="0" y1="10" x2="300" y2="10" stroke="var(--rule-soft)" />
-                    <rect x="24" y="4" width="58" height="12" fill="var(--band)" />
-                    <rect x="50" y="1" width="2.5" height="18" fill="var(--blue)" />
-                  </svg>
-                  <div className="val">141 ±11%</div>
+                <div className="drow">
+                  <div className="dn"><i style={{ background: 'var(--lp-sky)' }}></i>Water</div>
+                  <div className="bartrack"><div className="barfill" style={{ left: '8%', width: '19%', background: 'var(--lp-sky)' }}></div></div>
+                  <div className="dv">141 ±11%</div>
                 </div>
-                <div className="row">
-                  <div className="name">
-                    Digital <span className="tierbadge t2">T2</span>
-                  </div>
-                  <svg viewBox="0 0 300 20" width="100%" height="20" aria-hidden="true">
-                    <line x1="0" y1="10" x2="300" y2="10" stroke="var(--rule-soft)" />
-                    <rect x="12" y="4" width="52" height="12" fill="var(--band)" />
-                    <rect x="34" y="1" width="2.5" height="18" fill="var(--blue)" />
-                  </svg>
-                  <div className="val">83 ±13%</div>
+                <div className="drow">
+                  <div className="dn"><i style={{ background: 'var(--lp-violet)' }}></i>Digital</div>
+                  <div className="bartrack"><div className="barfill" style={{ left: '4%', width: '17%', background: 'var(--lp-violet)' }}></div></div>
+                  <div className="dv">83 ±13%</div>
                 </div>
-                <div className="row">
-                  <div className="name">
-                    Waste <span className="tierbadge">T1</span>
-                  </div>
-                  <svg viewBox="0 0 300 20" width="100%" height="20" aria-hidden="true">
-                    <line x1="0" y1="10" x2="300" y2="10" stroke="var(--rule-soft)" />
-                    <rect x="6" y="4" width="72" height="12" fill="var(--band)" stroke="var(--blue)" strokeDasharray="3 3" strokeWidth="1" />
-                    <rect x="36" y="1" width="2.5" height="18" fill="var(--blue)" />
-                  </svg>
-                  <div className="val">30 ±58%</div>
+                <div className="drow">
+                  <div className="dn"><i style={{ background: 'var(--lp-moss)' }}></i>Waste</div>
+                  <div className="bartrack"><div className="barfill" style={{ left: '2%', width: '24%', background: 'var(--lp-moss)', opacity: 0.55 }}></div></div>
+                  <div className="dv">30 ±58%</div>
                 </div>
               </div>
 
-              <div className="dash-right">
-                <h4>Where the uncertainty actually lives</h4>
-                <p>
-                  Transport is 27% of this school's footprint and carries almost all of its error. Running one
-                  mode-share survey would cut the whole-school range by roughly a third — worth more than another
-                  year of half-hourly meter data.
-                </p>
-                <p>Groundwork ranks that for you, so the next thing you spend a term on is the thing that moves the number.</p>
-                <div className="cold">
-                  <div className="mono">Peer standing</div>
-                  <p style={{ marginTop: '8px', fontSize: '13.5px' }}>
-                    Locked. Percentile ranking needs a real cohort of comparable schools — same setting, same
-                    climate region, same data tier — and that cohort doesn't exist yet. You'll see a bar here when
-                    it does, and not before.
+              <div className="dashright">
+                <div>
+                  <h4>Where the uncertainty actually lives</h4>
+                  <p>
+                    Transport is 27% of this school's footprint and carries almost all of its error. One
+                    mode-share survey would cut the whole-school range by roughly a third — more than another year
+                    of energy meter data would.
                   </p>
+                </div>
+                <div className="lockcard">
+                  <svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg>
+                  <div>
+                    <div className="lt">Peer standing — locked</div>
+                    <p>
+                      Needs a real cohort of comparable schools — same setting, climate region, data tier. You'll
+                      see a bar here once one exists, not before.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -476,7 +405,7 @@ const Landing = () => {
         </div>
       </section>
 
-      <section id="method">
+      <section className="sec" id="method">
         <div className="wrap">
           <div className="sec-head rv">
             <div className="eyebrow">How a number gets made</div>
@@ -486,122 +415,145 @@ const Landing = () => {
 
           <div className="steps">
             <div className="step rv">
-              <div className="num">01</div>
+              <div className="sicon">
+                <svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2" /><line x1="4" y1="10" x2="20" y2="10" /><line x1="8" y1="3" x2="8" y2="7" /><line x1="16" y1="3" x2="16" y2="7" /></svg>
+              </div>
+              <div className="snum">STEP 01</div>
               <h3>Give the period, not the year</h3>
-              <p>
-                Every row carries an explicit start and end date. An August-to-July academic year and a
-                January-to-December calendar year are both twelve months and both usable; a five-week snapshot is
-                labelled a spot check and never annualised by naive multiplication.
-              </p>
-              <div className="src">Partial years are extended using a seasonal shape derived from public degree-day data and a term calendar, and marked "modelled".</div>
+              <p>Every row carries a real start and end date. A five-week snapshot is labelled a spot check — never annualised by naive multiplication.</p>
+              <div className="ssrc">Partial years extend using a seasonal shape from public degree-day data, marked "modelled."</div>
             </div>
             <div className="step rv">
-              <div className="num">02</div>
+              <div className="sicon">
+                <svg viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5" /><rect x="4" y="17" width="16" height="3" rx="1" fill="var(--lp-brand)" stroke="none" /></svg>
+              </div>
+              <div className="snum">STEP 02</div>
               <h3>Get the data in three ways</h3>
-              <p>
-                Photograph a bill and let extraction read it, import a spreadsheet with explicit column mapping,
-                or type one meter read at a time. Extracted fields always land in a review screen beside the
-                original document — never straight into your file.
-              </p>
-              <div className="src">Ambiguous fields — a consumption figure sitting next to a demand charge — raise a written warning, not a quiet lower score.</div>
+              <p>Photograph a bill, import a spreadsheet, or type one meter read at a time. Extracted fields always land in a review screen first.</p>
+              <div className="ssrc">A consumption figure next to a demand charge raises a written warning, not a quiet lower score.</div>
             </div>
             <div className="step rv">
-              <div className="num">03</div>
+              <div className="sicon">
+                <svg viewBox="0 0 24 24"><path d="M4 8h13l-3-3M20 16H7l3 3" /></svg>
+              </div>
+              <div className="snum">STEP 03</div>
               <h3>Convert once, at the door</h3>
-              <p>
-                Enter therms, gallons, miles, whatever your invoices use. Everything is normalised to one internal
-                unit set on the way in, so nothing downstream has to guess, and you never see units you don't use.
-              </p>
-              <div className="src">Your local units are what's shown back to you on every screen and in every export.</div>
+              <p>Enter therms, gallons, miles — whatever your invoices use. Everything normalises to one internal unit on the way in.</p>
+              <div className="ssrc">Your local units are what's shown back on every screen and every export.</div>
             </div>
             <div className="step rv">
-              <div className="num">04</div>
+              <div className="sicon">
+                <svg viewBox="0 0 24 24" fill="var(--lp-brand)" stroke="none">
+                  <rect x="4" y="4" width="16" height="16" rx="4" fill="none" stroke="var(--lp-brand)" strokeWidth="1.7" />
+                  <circle cx="8.5" cy="8.5" r="1.3" /><circle cx="15.5" cy="8.5" r="1.3" /><circle cx="12" cy="12" r="1.3" />
+                  <circle cx="8.5" cy="15.5" r="1.3" /><circle cx="15.5" cy="15.5" r="1.3" />
+                </svg>
+              </div>
+              <div className="snum">STEP 04</div>
               <h3>Simulate, then report the spread</h3>
+              <p>Each factor is sampled across its published interval thousands of times — a central figure plus a stated range, the shape a consultancy's reviewer would accept.</p>
+              <div className="ssrc">Factors: a multi-property peer study, a national building-energy survey, an adapted commuting methodology, a peer-reviewed food-emissions dataset.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="sec" id="benchmark">
+        <div className="wrap">
+          <div className="bmgrid">
+            <div className="bmtext rv">
+              <blockquote>
+                "Roughly a third lower than similar schools" is a claim. <em>1,046 to 1,392 tonnes, transport modelled</em> is a disclosure.
+              </blockquote>
               <p>
-                Each factor is sampled across its published interval thousands of times. What you get back is a
-                central figure and a stated confidence range — the same shape of result a reviewer would accept
-                from an environmental consultancy.
+                CarbonTally is built for the moment after the report is published — the parent email, the board
+                follow-up, the local paper. A stated range holds up under that. A confident single figure with
+                undocumented assumptions doesn't, and in some jurisdictions that's a liability, not just an
+                embarrassment.
               </p>
-              <div className="src">
-                Factors are drawn from a published multi-property peer study of school buildings, a national
-                building-energy survey, an internationally recognised value-chain commuting methodology adapted
-                for schools, and a peer-reviewed food-emissions dataset.
+              <div className="legalbox">
+                Environmental claims made to the public are regulated in several jurisdictions, including US
+                federal guidance on environmental marketing and state consumer-protection statutes. Overstated
+                precision is a named failure mode. Every export carries its method, period, tier and range — what
+                a regulator or journalist would ask for.
+              </div>
+            </div>
+            <div className="rv">
+              <div className="eyebrow" style={{ marginBottom: '14px' }}>The software refuses, on your behalf</div>
+              <div className="refuse">
+                <div className="rline">
+                  <span className="ric"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="#fff" strokeWidth="2.6" strokeLinecap="round" /></svg></span>
+                  Promote a category to a higher tier because you'd like it to be there
+                </div>
+                <div className="rline">
+                  <span className="ric"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="#fff" strokeWidth="2.6" strokeLinecap="round" /></svg></span>
+                  Fill a data gap with an unlabelled assumption
+                </div>
+                <div className="rline">
+                  <span className="ric"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="#fff" strokeWidth="2.6" strokeLinecap="round" /></svg></span>
+                  Show a percentile against a peer group that doesn't exist yet
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="benchmark">
-        <div className="wrap pull">
-          <div className="rv">
-            <blockquote>
-              "Roughly a third lower than similar schools" is a claim. <span className="em">1,046 to 1,392 tonnes, transport modelled</span> is a disclosure.
-            </blockquote>
-          </div>
-          <div className="rv">
-            <p>
-              Groundwork is built for the moment after the report is published — the parent email, the board
-              follow-up, the local paper. A stated range holds up under that. A confident single figure with
-              undocumented assumptions behind it does not, and in some jurisdictions it is a liability rather than
-              an embarrassment.
-            </p>
-            <p>
-              So the software refuses a few things on your behalf: it won't promote a category to a higher tier
-              because you'd like it to, it won't fill a gap with an unlabelled assumption, and it won't show you a
-              percentile against a peer group that doesn't exist yet.
-            </p>
-            <div className="legal">
-              Environmental claims made to the public are regulated in several jurisdictions, including under US
-              federal guidance on environmental marketing and state consumer-protection statutes. Overstated
-              precision is one of the specific failure modes those rules describe. Every Groundwork export carries
-              its method, its period, its tier per category and its range — the things a regulator or a journalist
-              would ask for.
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="cta" id="cta">
-        <div className="wrap cta-in">
-          <div className="rv">
+      <section className="sec" id="cta">
+        <div className="wrap">
+          <div className="ctacard rv">
             <div className="eyebrow">Pre-launch · Founding schools</div>
-            <h2 style={{ marginTop: '20px' }}>
+            <h2>
               Bring one electricity bill.
               <br />
               That's a real starting point.
             </h2>
-            <p>
+            <p className="lede2">
               Energy at Tier 2 in a single sitting is enough for a defensible first number with an honest range on
-              it. Everything else can stay at Tier 1 until the term you have time for it.
+              it. Everything else can stay at Tier 1 until you have a term for it.
             </p>
-            <div className="hero-cta">
-              <Link className="btn" to="/login">
+            <div className="herocta">
+              <Link className="pill" to="/login">
                 Start a school file
-                <svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true">
-                  <path d="M1 7h11M7.5 2.5 12 7l-4.5 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
+                <svg width="12" height="12" viewBox="0 0 14 14" aria-hidden="true">
+                  <path d="M1 7h11M7.5 2.5 12 7l-4.5 4.5" fill="none" stroke="currentColor" strokeWidth="1.8" />
                 </svg>
               </Link>
-              <a className="btn ghost" href="#method">
+              <a className="pill ghost" href="#method">
                 Send the method to your business office
               </a>
             </div>
+            <ul className="checklist">
+              <li>
+                <svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                One school, one file — not a district rollout to start
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                Your submitted data is yours; nothing publishes without you
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                Student surveys collect mode and postcode only — never a name
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                Exports carry period, tier and range on every figure
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                Founding schools help shape the peer groups before they're fixed
+              </li>
+            </ul>
           </div>
-          <ul className="checks rv">
-            <li>One school, one file — not a district rollout to get started</li>
-            <li>Your submitted data is yours; nothing is published without you</li>
-            <li>Student surveys collect mode and postcode only — never a name</li>
-            <li>Exports carry period, tier and range on every figure</li>
-            <li>Founding schools shape the peer groups before they're fixed</li>
-          </ul>
         </div>
       </section>
 
       <div className="wrap">
         <footer>
-          <span>Groundwork</span>
+          <span className="fmark">CarbonTally</span>
           <span>Carbon accounting for physical schools</span>
-          <span className="sp mono" style={{ fontSize: '11.5px', letterSpacing: '.1em' }}>
+          <span className="sp" style={{ fontSize: '11px', letterSpacing: '.08em', fontWeight: 700 }}>
             PRE-LAUNCH · FIGURES ON THIS PAGE ARE ILLUSTRATIVE
           </span>
         </footer>
