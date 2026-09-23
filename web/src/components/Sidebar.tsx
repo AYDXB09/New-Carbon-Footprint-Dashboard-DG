@@ -4,9 +4,14 @@ import "./Sidebar.css";
 
 // Extracted out of Profile.tsx when Energy became the second page to need it
 // — two inline copies would have drifted the moment one of the placeholder
-// "/" links below got wired to a real route, which is exactly what happened
-// to Energy here. Water/Transportation/Digital/Waste/Dashboard/Benchmarking/
-// Reports stay pointed at "/" honestly: those pages don't exist yet.
+// links below got wired to a real route, which is exactly what happened to
+// Energy here. Water/Transportation/Digital/Waste/Dashboard/Benchmarking/
+// Reports now point at their own ComingSoon route (pages/ComingSoon) rather
+// than "/" — they used to point there honestly because those modules don't
+// exist yet, but once "/" got its own sidebar too (below), that meant
+// clicking any of them silently swapped a signed-in user's whole menu for
+// the public marketing one. ComingSoon keeps the same app shell and the
+// same item lit, and just says the module isn't built.
 //
 // "marketing" variant (2026-09-22): Landing and Login used to carry their
 // own, different-shaped nav (a top bar, or nothing at all) — genuinely
@@ -98,17 +103,17 @@ export default function Sidebar(props: Props) {
       </div>
       <nav className="navgroup">
         <span className="navlabel">Workspace</span>
-        {item("dashboard", "/", "Dashboard")}
+        {item("dashboard", "/dashboard", "Dashboard")}
         {item("energy", "/energy", "Energy")}
-        {item("water", "/", "Water")}
-        {item("transportation", "/", "Transportation")}
-        {item("digital", "/", "Digital")}
-        {item("waste", "/", "Waste")}
+        {item("water", "/water", "Water")}
+        {item("transportation", "/transportation", "Transportation")}
+        {item("digital", "/digital", "Digital")}
+        {item("waste", "/waste", "Waste")}
       </nav>
       <nav className="navgroup">
         <span className="navlabel">Compare</span>
-        {item("benchmarking", "/", "Benchmarking")}
-        {item("reports", "/", "Reports")}
+        {item("benchmarking", "/benchmarking", "Benchmarking")}
+        {item("reports", "/reports", "Reports")}
       </nav>
       <nav className="navgroup">
         <span className="navlabel">Account</span>

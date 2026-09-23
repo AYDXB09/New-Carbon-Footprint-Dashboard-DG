@@ -8,6 +8,7 @@ import Landing from "./pages/Landing/Landing";
 import Profile from "./pages/Profile/Profile";
 import Energy from "./pages/Energy/Energy";
 import Login from "./pages/Login/Login";
+import ComingSoon from "./pages/ComingSoon/ComingSoon";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -32,6 +33,19 @@ createRoot(document.getElementById("root")!).render(
               </RequireAuth>
             }
           />
+          {(["dashboard", "water", "transportation", "digital", "waste", "benchmarking", "reports"] as const).map(
+            (nav) => (
+              <Route
+                key={nav}
+                path={`/${nav}`}
+                element={
+                  <RequireAuth>
+                    <ComingSoon nav={nav} />
+                  </RequireAuth>
+                }
+              />
+            ),
+          )}
         </Routes>
         <FontScaleControl />
       </AuthProvider>
