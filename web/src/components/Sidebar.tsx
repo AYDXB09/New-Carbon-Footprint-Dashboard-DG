@@ -50,10 +50,15 @@ export default function Sidebar(props: Props) {
     return () => btn?.removeEventListener("click", onClick);
   }, []);
 
-  const item = (key: NavKey, to: string, label: string) => (
+  // Only Energy and School profile are real, built pages right now; the
+  // other seven were indistinguishable from these two in the menu — same
+  // dot, same weight — with no way to tell which led somewhere real before
+  // clicking. "Soon" makes that visible up front instead of on arrival.
+  const item = (key: NavKey, to: string, label: string, built = true) => (
     <Link className={`navitem${props.variant !== "marketing" && props.active === key ? " active" : ""}`} to={to}>
       <span className="dot"></span>
       {label}
+      {!built && <span className="soon">Soon</span>}
     </Link>
   );
   const anchor = (href: string, label: string) => (
@@ -103,17 +108,17 @@ export default function Sidebar(props: Props) {
       </div>
       <nav className="navgroup">
         <span className="navlabel">Workspace</span>
-        {item("dashboard", "/dashboard", "Dashboard")}
+        {item("dashboard", "/dashboard", "Dashboard", false)}
         {item("energy", "/energy", "Energy")}
-        {item("water", "/water", "Water")}
-        {item("transportation", "/transportation", "Transportation")}
-        {item("digital", "/digital", "Digital")}
-        {item("waste", "/waste", "Waste")}
+        {item("water", "/water", "Water", false)}
+        {item("transportation", "/transportation", "Transportation", false)}
+        {item("digital", "/digital", "Digital", false)}
+        {item("waste", "/waste", "Waste", false)}
       </nav>
       <nav className="navgroup">
         <span className="navlabel">Compare</span>
-        {item("benchmarking", "/benchmarking", "Benchmarking")}
-        {item("reports", "/reports", "Reports")}
+        {item("benchmarking", "/benchmarking", "Benchmarking", false)}
+        {item("reports", "/reports", "Reports", false)}
       </nav>
       <nav className="navgroup">
         <span className="navlabel">Account</span>

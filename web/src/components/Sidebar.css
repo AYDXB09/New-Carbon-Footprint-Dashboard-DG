@@ -19,6 +19,10 @@
 .navitem .dot{ width:5px; height:5px; border-radius:50%; background:var(--ink-faint); flex-shrink:0; }
 .navitem.active .dot{ background:var(--blue); }
 .navitem:hover{ color:var(--ink); }
+.navitem .soon{
+  margin-left:auto; font-size:0.6rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase;
+  color:var(--ink-faint); background:var(--surface-2); border-radius:20px; padding:0.12rem 0.45rem;
+}
 
 /* marketing variant only: the "Start a school file" CTA and the anchor
    links above it reuse .navitem, so they already match; this just styles
