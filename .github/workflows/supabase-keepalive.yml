@@ -2,8 +2,9 @@ name: Keep Supabase awake
 
 # Supabase's free tier pauses a project after ~7 days with no API activity —
 # that's what happened on 2026-09-22 (EmissionsSQL, ref zzoervdobfuvnldqaicn)
-# and broke sign-in until it was manually restored. This just pings the
-# project's REST endpoint on a schedule so it never goes quiet that long.
+# and again on 2026-10-10, and broke sign-in until it was manually restored.
+# This just queries the project's REST API on a schedule so it never goes
+# quiet that long.
 
 on:
   schedule:
@@ -26,6 +27,15 @@ jobs:
           # in the built frontend bundle to every visitor's browser. It is
           # not a secret and RLS is what actually protects the data, so it's
           # safe to commit here rather than wire up a repo secret for it.
-          curl -sf "https://zzoervdobfuvnldqaicn.supabase.co/rest/v1/" \
+          #
+          # Deliberately a real table query, not the REST root ("/rest/v1/"):
+          # Supabase now answers the root with 401 "Secret API key required"
+          # to publishable keys, so pinging it fails every run. A query
+          # against `schools` returns 200 ([] — RLS hides every row from an
+          # unauthenticated caller) and genuinely goes through PostgREST to
+          # Postgres, which is the activity the pause timer cares about.
+          # -f stays on so a paused or broken project turns the run red —
+          # that's the alarm.
+          curl -sf "https://zzoervdobfuvnldqaicn.supabase.co/rest/v1/schools?select=id&limit=1" \
             -H "apikey: sb_publishable_iyXjS6NLoq7NO0DpNMOoBA_3ajcmkpH" \
             -o /dev/null -w "Supabase ping: HTTP %{http_code}\n"
