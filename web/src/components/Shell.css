@@ -1,9 +1,12 @@
-/* The two-column app shell (sidebar + main) used by every page now —
-   Profile/Energy already had this in Profile.css; Landing/Login pick up the
-   same grid here rather than duplicating it a third and fourth time. */
+/* The two-column app shell (sidebar + main) shared by every page. Imported by
+   Sidebar.tsx itself, so no page can render a Sidebar without it. Below 860px
+   the grid collapses to one column and the sidebar becomes an off-canvas
+   drawer (see Sidebar.css) rather than disappearing. */
 .shell { display: grid; grid-template-columns: 236px 1fr; min-height: 100vh; }
 .shell > main { min-width: 0; }
 @media (max-width: 860px) {
-  .shell { grid-template-columns: 1fr; }
-  .side { display: none; }
+  /* Two in-flow rows here: the top bar, then main. Without explicit rows, a
+     page shorter than the screen (Login) shares the spare height between
+     both auto rows and the top bar balloons to ~2x its height. */
+  .shell { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
 }
