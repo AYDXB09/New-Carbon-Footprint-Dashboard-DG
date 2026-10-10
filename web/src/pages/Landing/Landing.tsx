@@ -58,7 +58,7 @@ const Landing = () => {
   return (
     <div className="shell">
       <Sidebar variant="marketing" />
-      <main>
+      <main className="landing">
       <header className="hero" id="top">
         <div className="wrap">
           <div className="herogrid">
