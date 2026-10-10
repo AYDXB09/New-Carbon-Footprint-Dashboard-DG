@@ -62,3 +62,14 @@
   font-size: 0.76rem;
   color: var(--amber);
 }
+.login-card .login-legal {
+  font-size: 0.74rem;
+  color: var(--ink-faint);
+  line-height: 1.5;
+  margin: 1.1rem 0 0;
+}
+.login-card .login-legal a {
+  color: var(--ink-soft);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

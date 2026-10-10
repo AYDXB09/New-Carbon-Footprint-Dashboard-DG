@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
 import { useAuth } from "../../lib/auth";
 import Sidebar from "../../components/Sidebar";
@@ -58,6 +58,10 @@ export default function Login() {
               </button>
             </form>
             {error && <p className="login-error mono">{error}</p>}
+            <p className="login-legal">
+              By signing in you agree to the <Link to="/terms">Terms</Link> and{" "}
+              <Link to="/privacy">Privacy Policy</Link>.
+            </p>
           </>
         )}
       </div>

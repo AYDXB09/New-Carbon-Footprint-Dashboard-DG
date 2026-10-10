@@ -1,0 +1,16 @@
+/* Prose styling for the rendered Terms / Privacy markdown. */
+.main.legal { max-width: 760px; }
+.legal article h1 { font-family: "Fredoka", sans-serif; font-weight: 600; font-size: 1.65rem; margin: 0 0 0.4rem; letter-spacing: -0.01em; }
+.legal article h2 { font-family: "Fredoka", sans-serif; font-weight: 600; font-size: 1.05rem; margin: 2rem 0 0.55rem; }
+.legal article p, .legal article li { font-size: 0.9rem; line-height: 1.68; color: var(--ink-soft); }
+.legal article p { margin: 0 0 0.9rem; }
+.legal article h1 + p strong { color: var(--ink-faint); font-weight: 600; font-size: 0.82rem; }
+.legal article strong { color: var(--ink); font-weight: 600; }
+.legal article ul, .legal article ol { margin: 0 0 0.9rem; padding-left: 1.25rem; }
+.legal article li { margin-bottom: 0.35rem; }
+.legal article a { color: var(--blue); text-decoration: underline; text-underline-offset: 2px; }
+.legal article table { width: 100%; border-collapse: collapse; margin: 0.4rem 0 1.1rem; font-size: 0.84rem; }
+.legal article th, .legal article td { text-align: left; vertical-align: top; padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--rule); line-height: 1.55; color: var(--ink-soft); }
+.legal article th { color: var(--ink); font-weight: 600; background: var(--surface-2); }
+.legal article td:first-child { color: var(--ink); white-space: nowrap; }
+@media (max-width: 560px) { .legal article td:first-child { white-space: normal; } .legal article table { display: block; overflow-x: auto; } }

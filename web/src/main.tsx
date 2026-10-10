@@ -9,6 +9,7 @@ import Profile from "./pages/Profile/Profile";
 import Energy from "./pages/Energy/Energy";
 import Login from "./pages/Login/Login";
 import ComingSoon from "./pages/ComingSoon/ComingSoon";
+import Legal from "./pages/Legal/Legal";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -17,6 +18,8 @@ createRoot(document.getElementById("root")!).render(
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/terms" element={<Legal kind="terms" />} />
+          <Route path="/privacy" element={<Legal kind="privacy" />} />
           <Route
             path="/profile"
             element={

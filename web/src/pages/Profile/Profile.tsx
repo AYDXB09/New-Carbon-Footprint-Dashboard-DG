@@ -4,6 +4,7 @@ import Sidebar from "../../components/Sidebar";
 import SchoolMap from "../../components/SchoolMap";
 import GradeRangePicker from "../../components/GradeRangePicker";
 import ContactCard from "../../components/ContactCard";
+import DangerZone from "../../components/DangerZone";
 import {
   deleteContact,
   getContacts,
@@ -770,6 +771,8 @@ export default function Profile() {
             the scenes, so nothing else about setup changes based on what you pick here.
           </p>
         </div>
+
+        <DangerZone />
       </main>
     </div>
   );

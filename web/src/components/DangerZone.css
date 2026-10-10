@@ -1,0 +1,11 @@
+.danger { margin-top: 3rem; padding: 1.3rem 1.4rem; border: 1px solid color-mix(in srgb, #d64545 45%, var(--rule)); border-radius: 12px; background: var(--surface); }
+.danger h2 { font-family: "Fredoka", sans-serif; font-weight: 600; font-size: 1.05rem; margin: 0 0 0.5rem; color: #d64545; }
+.danger p { font-size: 0.84rem; line-height: 1.6; color: var(--ink-soft); margin: 0 0 1rem; max-width: 62ch; }
+.danger-btn { font-family: "Work Sans", sans-serif; font-size: 0.82rem; font-weight: 700; padding: 0.55rem 1.1rem; border-radius: 20px; border: 1.5px solid #d64545; background: #d64545; color: #fff; cursor: pointer; }
+.danger-btn.ghost { background: transparent; color: #d64545; }
+.danger-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.danger-confirm { display: flex; flex-direction: column; gap: 0.6rem; max-width: 22rem; }
+.danger-confirm label { font-size: 0.8rem; color: var(--ink-soft); }
+.danger-confirm input { font-family: "Work Sans", sans-serif; font-size: 0.9rem; background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; padding: 0.6rem 0.8rem; color: var(--ink); }
+.danger-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+.danger .danger-error { color: #d64545; font-size: 0.8rem; margin: 0.3rem 0 0; }
