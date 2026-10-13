@@ -1,5 +1,4 @@
 import { supabase } from "./supabase";
-import type { Factor as EngineFactor } from "./engine/energy";
 import type { CoverageClass } from "./engine/coverage";
 
 export type { CoverageClass };
@@ -10,11 +9,21 @@ export type Meter = {
   module: string;
   location: string;
   meter_number: string | null;
+  /**
+   * Which emission factor prices this meter's readings (0013). Null for Energy,
+   * which uses the grid factor, and for any meter created before 0013 was applied.
+   */
+  factor_key?: string | null;
   created_at: string;
   updated_at: string;
 };
 
 export type MeterReadingSource = "ai_bill_upload" | "csv_import" | "manual";
+export const READING_SOURCE_LABEL: Record<MeterReadingSource, string> = {
+  ai_bill_upload: "Bill read by AI",
+  csv_import: "CSV import",
+  manual: "Typed in",
+};
 
 export type MeterReading = {
   id: string;
@@ -93,10 +102,19 @@ export async function createMeter(
   module: string,
   location: string,
   meterNumber: string | null,
+  factorKey?: string | null,
 ): Promise<Meter> {
   const { data, error } = await supabase
     .from("meters")
-    .insert({ school_id: schoolId, module, location, meter_number: meterNumber })
+    // factor_key is only sent when there is one, so Energy keeps working on a
+    // database that has not had 0013 applied yet.
+    .insert({
+      school_id: schoolId,
+      module,
+      location,
+      meter_number: meterNumber,
+      ...(factorKey ? { factor_key: factorKey } : {}),
+    })
     .select("*")
     .single();
   if (error) throw error;
@@ -105,7 +123,7 @@ export async function createMeter(
 
 export async function updateMeter(
   id: string,
-  patch: { location: string; meter_number: string | null },
+  patch: { location: string; meter_number: string | null; factor_key?: string | null },
 ): Promise<Meter> {
   const { data, error } = await supabase
     .from("meters")
@@ -235,16 +253,7 @@ export async function listFactorCandidates(
     .sort((a, b) => scopeRank[a.scope] - scopeRank[b.scope] || b.vintage_year - a.vintage_year);
 }
 
-export function toEngineFactor(row: EmissionFactorRow): EngineFactor {
-  return {
-    value: row.value,
-    unit: row.unit,
-    uncertaintyPct: row.uncertainty_pct,
-    sourceName: row.source_name,
-    sourceOrg: row.source_org,
-    vintageYear: row.vintage_year,
-  };
-}
+export { toEngineFactor } from "./factorMath";
 
 // ---------------------------------------------------------------------------
 // Reports

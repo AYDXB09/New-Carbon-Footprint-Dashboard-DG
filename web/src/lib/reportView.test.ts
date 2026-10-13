@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { EnergyReportRow } from "./energy";
 import type { SchoolRow } from "./school";
 import {
+  activityQuantity,
   consumptionKwh,
   fmtDate,
   fmtStepValue,
@@ -147,23 +148,31 @@ describe("fmtDate", () => {
 
 describe("nextSteps", () => {
   it("asks for a first reading when there is no report", () => {
-    expect(nextSteps(school, null)).toEqual([{ text: expect.stringContaining("first figure"), to: "/energy" }]);
+    expect(nextSteps(school, [])).toEqual([{ text: expect.stringContaining("first figure"), to: "/energy" }]);
   });
   it("is empty for a complete full-year report on a school with a country", () => {
-    expect(nextSteps(school, report())).toEqual([]);
+    expect(nextSteps(school, [report()])).toEqual([]);
   });
   it("flags a partial year and points at Energy", () => {
-    const s = nextSteps(school, report({ coverage: "partial_year" }));
+    const s = nextSteps(school, [report({ coverage: "partial_year" })]);
     expect(s).toHaveLength(1);
     expect(s[0].to).toBe("/energy");
   });
   it("flags missing floor area / students and points at Profile", () => {
-    const s = nextSteps(school, report({ denom_gfa_conditioned_m2: null }));
+    const s = nextSteps(school, [report({ denom_gfa_conditioned_m2: null })]);
     expect(s).toHaveLength(1);
     expect(s[0].to).toBe("/profile");
   });
+  it("names each module that is short of a year, and asks for the school's size only once", () => {
+    const s = nextSteps(school, [
+      report({ coverage: "partial_year", denom_gfa_conditioned_m2: null }),
+      report({ module: "water", coverage: "spot_check", denom_gfa_conditioned_m2: null }),
+    ]);
+    expect(s.map((x) => x.to)).toEqual(["/energy", "/water", "/profile"]);
+    expect(s[1].text).toContain("water");
+  });
   it("flags a missing country", () => {
-    const s = nextSteps({ country_code: null } as SchoolRow, report());
+    const s = nextSteps({ country_code: null } as SchoolRow, [report()]);
     expect(s).toHaveLength(1);
     expect(s[0].text).toContain("country");
   });
@@ -174,4 +183,33 @@ describe("fmtStepValue", () => {
   it("drops the .0 on whole numbers", () => expect(fmtStepValue(1109200)).toBe("1,109,200"));
   it("uses one decimal otherwise", () => expect(fmtStepValue(397100.37)).toBe("397,100.4"));
   it("does not print float noise", () => expect(fmtStepValue(0.1 + 0.2)).toBe("0.3"));
+});
+
+describe("multi-factor reports", () => {
+  const multi = {
+    derivation: {
+      steps: [{ label: "Water volume", detail: "", value: 3120, unit: "m3" }],
+      factors: [
+        { key: "supply_intensity", id: "a", scope: "country", source_org: "UK Government (DESNZ)", source_name: "x", vintage_year: 2023, value: 0.1913, unit: "kgCO2e/m3", uncertainty_pct: 100, stand_in: true },
+        { key: "treatment_intensity", id: "b", scope: "country", source_org: "UK Government (DESNZ)", source_name: "y", vintage_year: 2023, value: 0.17088, unit: "kgCO2e/m3", uncertainty_pct: 100, stand_in: true },
+      ],
+    },
+  };
+  it("reads every factor, with its key, unit and stand-in flag", () => {
+    const d = readDerivation(multi);
+    expect(d.factors.map((f) => f.key)).toEqual(["supply_intensity", "treatment_intensity"]);
+    expect(d.factors.every((f) => f.standIn)).toBe(true);
+    expect(d.factor).toEqual(d.factors[0]);
+    expect(d.factors[0]).toMatchObject({ value: 0.1913, unit: "kgCO2e/m3", uncertaintyPct: 100 });
+  });
+  it("still reads an older single-factor energy report, which is not a stand-in", () => {
+    const d = readDerivation(report());
+    expect(d.factors).toHaveLength(1);
+    expect(d.factors[0].standIn).toBe(false);
+  });
+  it("takes the quantity from the first step whatever the module", () => {
+    expect(activityQuantity(multi)).toEqual({ label: "Water volume", value: 3120, unit: "m3" });
+    expect(consumptionKwh(multi)).toBeNull(); // m3 is not kWh
+    expect(activityQuantity({ derivation: { steps: [{ label: "x", detail: "" }] } })).toBeNull();
+  });
 });

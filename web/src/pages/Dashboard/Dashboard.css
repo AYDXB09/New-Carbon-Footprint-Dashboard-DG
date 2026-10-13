@@ -35,7 +35,7 @@
 }
 
 .dash-range-track { position: relative; height: 14px; border-radius: 999px; background: var(--surface-2); }
-.dash-range-fill { position: absolute; top: 0; bottom: 0; border-radius: 999px; background: var(--lp-amber); opacity: 0.8; }
+.dash-range-fill { position: absolute; top: 0; bottom: 0; border-radius: 999px; background: var(--cat, var(--lp-amber)); opacity: 0.8; }
 .dash-range-tick { position: absolute; top: -4px; bottom: -4px; width: 3px; margin-left: -1.5px; border-radius: 2px; background: var(--ink); }
 .dash-range-scale { display: flex; justify-content: space-between; margin-top: 5px; font-size: 0.7rem; color: var(--ink-faint); }
 

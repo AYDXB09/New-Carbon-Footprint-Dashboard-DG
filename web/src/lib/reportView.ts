@@ -19,10 +19,10 @@ export type Category = {
 
 export const CATEGORIES: readonly Category[] = [
   { key: "energy", label: "Energy", colour: "var(--lp-amber)", tint: "var(--lp-amber-t)", built: true },
-  { key: "water", label: "Water", colour: "var(--lp-sky)", tint: "var(--lp-sky-t)", built: false },
-  { key: "transportation", label: "Transportation", colour: "var(--lp-coral)", tint: "var(--lp-coral-t)", built: false },
+  { key: "water", label: "Water", colour: "var(--lp-sky)", tint: "var(--lp-sky-t)", built: true },
+  { key: "transportation", label: "Transportation", colour: "var(--lp-coral)", tint: "var(--lp-coral-t)", built: true },
   { key: "digital", label: "Digital", colour: "var(--lp-violet)", tint: "var(--lp-violet-t)", built: false },
-  { key: "waste", label: "Waste & food", colour: "var(--lp-moss)", tint: "var(--lp-moss-t)", built: false },
+  { key: "waste", label: "Waste & food", colour: "var(--lp-moss)", tint: "var(--lp-moss-t)", built: true },
 ];
 
 export function categoryFor(module: string): Category {
@@ -126,13 +126,19 @@ export type DerivationStepView = {
 };
 
 export type FactorSnapshot = {
+  /** Which factor in a multi-factor report (e.g. "supply_intensity"); null on older reports. */
+  key: string | null;
   id: string | null;
   scope: string | null;
   sourceOrg: string | null;
   sourceName: string | null;
   vintageYear: number | null;
   value: number | null;
+  unit: string | null;
+  /** The uncertainty actually applied (wider than the published one for a stand-in). */
   uncertaintyPct: number | null;
+  /** Published for another country and used here only as a flagged stand-in. */
+  standIn: boolean;
 };
 
 function isRecord(v: unknown): v is Record<string, unknown> {
@@ -142,12 +148,29 @@ const str = (v: unknown): string | null => (typeof v === "string" ? v : null);
 const num = (v: unknown): number | null => (typeof v === "number" && Number.isFinite(v) ? v : null);
 
 /** `derivation` is a loose jsonb column; read it defensively rather than trusting its shape. */
+function readFactor(f: Record<string, unknown>): FactorSnapshot {
+  return {
+    key: str(f.key),
+    id: str(f.id),
+    scope: str(f.scope),
+    sourceOrg: str(f.source_org),
+    sourceName: str(f.source_name),
+    vintageYear: num(f.vintage_year),
+    value: num(f.value),
+    unit: str(f.unit),
+    uncertaintyPct: num(f.uncertainty_pct),
+    standIn: f.stand_in === true,
+  };
+}
+
 export function readDerivation(r: Pick<EnergyReportRow, "derivation">): {
   steps: DerivationStepView[];
+  /** The first factor — kept for single-factor callers. */
   factor: FactorSnapshot | null;
+  factors: FactorSnapshot[];
 } {
   const d = r.derivation;
-  if (!isRecord(d)) return { steps: [], factor: null };
+  if (!isRecord(d)) return { steps: [], factor: null, factors: [] };
 
   const steps: DerivationStepView[] = [];
   if (Array.isArray(d.steps)) {
@@ -165,25 +188,32 @@ export function readDerivation(r: Pick<EnergyReportRow, "derivation">): {
     }
   }
 
-  let factor: FactorSnapshot | null = null;
-  if (isRecord(d.factor)) {
-    factor = {
-      id: str(d.factor.id),
-      scope: str(d.factor.scope),
-      sourceOrg: str(d.factor.source_org),
-      sourceName: str(d.factor.source_name),
-      vintageYear: num(d.factor.vintage_year),
-      value: num(d.factor.value),
-      uncertaintyPct: num(d.factor.uncertainty_pct),
-    };
+  // Newer reports store every factor used (`factors`); older Energy reports store one (`factor`).
+  const factors: FactorSnapshot[] = [];
+  if (Array.isArray(d.factors)) {
+    for (const f of d.factors) if (isRecord(f)) factors.push(readFactor(f));
+  } else if (isRecord(d.factor)) {
+    factors.push(readFactor(d.factor));
   }
-  return { steps, factor };
+  return { steps, factor: factors[0] ?? null, factors };
 }
 
-/** Total metered kWh, from the engine's first derivation step. */
+/**
+ * What the report was computed from, in the module's own unit. By convention
+ * the engine's FIRST derivation step is always the quantity (engine/activity.ts).
+ */
+export function activityQuantity(
+  r: Pick<EnergyReportRow, "derivation">,
+): { label: string; value: number; unit: string } | null {
+  const first = readDerivation(r).steps[0];
+  if (!first || first.value === undefined || !first.unit) return null;
+  return { label: first.label, value: first.value, unit: first.unit };
+}
+
+/** Total metered kWh — only for an energy report. */
 export function consumptionKwh(r: Pick<EnergyReportRow, "derivation">): number | null {
-  const step = readDerivation(r).steps.find((s) => s.label === "Metered consumption" && s.unit === "kWh");
-  return step?.value ?? null;
+  const q = activityQuantity(r);
+  return q && q.unit === "kWh" ? q.value : null;
 }
 
 // ---------------------------------------------------------------------------
@@ -212,23 +242,30 @@ export type NextStep = { text: string; to: string };
  * Concrete, grounded nudges only — each one names a real gap in this school's
  * data. Returns nothing rather than padding the list with generic advice.
  */
-export function nextSteps(school: SchoolRow, latestEnergy: EnergyReportRow | null): NextStep[] {
+export function nextSteps(school: SchoolRow, latest: readonly EnergyReportRow[]): NextStep[] {
   const steps: NextStep[] = [];
 
-  if (!latestEnergy) {
+  if (latest.length === 0) {
     steps.push({ text: "Log a meter reading to get your first figure.", to: "/energy" });
   } else {
-    if (latestEnergy.coverage !== "full_year") {
+    for (const r of latest) {
+      if (r.coverage === "full_year") continue;
+      const label = categoryFor(r.module).label.toLowerCase();
       steps.push({
         text:
-          latestEnergy.coverage === "partial_year"
-            ? "The energy reading covers part of a year and is not scaled up. Add the missing months."
-            : "The energy reading is a short spot check. Add a full year of readings.",
-        to: "/energy",
+          r.coverage === "partial_year"
+            ? `The ${label} reading covers part of a year and is not scaled up. Add the missing months.`
+            : `The ${label} reading is a short spot check. Add a full year of readings.`,
+        to: `/${r.module}`,
       });
     }
-    const i = intensities(latestEnergy);
-    if (i.kgPerM2 == null || i.kgPerStudent == null) {
+    // One reminder, not one per module: the school's size is the same for all of them.
+    if (
+      latest.some((r) => {
+        const i = intensities(r);
+        return i.kgPerM2 == null || i.kgPerStudent == null;
+      })
+    ) {
       steps.push({
         text: "Add floor area and student numbers to see emissions per m² and per student.",
         to: "/profile",

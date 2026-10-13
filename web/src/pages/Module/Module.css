@@ -1,0 +1,10 @@
+/* Prefixed mod- on purpose — CSS is global in this app (see Dashboard.css). */
+.mod-blurb { color: var(--ink-soft); font-size: 0.92rem; line-height: 1.55; margin: 0 0 10px; max-width: 62ch; }
+.mod-caveat {
+  font-size: 0.82rem; line-height: 1.55; color: var(--ink); background: var(--amber-soft);
+  border-left: 4px solid var(--amber); border-radius: 8px; padding: 10px 14px; margin: 0 0 8px; max-width: 70ch;
+}
+.mod-standin { background: var(--amber-soft); border-radius: 10px; padding: 14px 16px; font-size: 0.86rem; line-height: 1.55; }
+.mod-standin p { margin: 6px 0 0; }
+.mod-links { margin: 16px 0 0; font-size: 0.86rem; }
+.mod-links a { color: var(--blue-ink); font-weight: 600; text-decoration: none; }

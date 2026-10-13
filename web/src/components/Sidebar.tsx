@@ -179,10 +179,10 @@ export default function Sidebar(props: Props) {
               <span className="navlabel">Workspace</span>
               {item("dashboard", "/dashboard", "Dashboard")}
               {item("energy", "/energy", "Energy")}
-              {item("water", "/water", "Water", false)}
-              {item("transportation", "/transportation", "Transportation", false)}
+              {item("water", "/water", "Water")}
+              {item("transportation", "/transportation", "Transportation")}
               {item("digital", "/digital", "Digital", false)}
-              {item("waste", "/waste", "Waste", false)}
+              {item("waste", "/waste", "Waste")}
             </nav>
             <nav className="navgroup">
               <span className="navlabel">Compare</span>

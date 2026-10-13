@@ -1,0 +1,71 @@
+/* Prefixed rd- on purpose: CSS is global in this app (see Dashboard.css).
+   Shared pieces (.card, .field-grid, .field, .btn, .btn-link, .hint, .error-text,
+   .form-actions, .unit-row) come from Profile.css / Energy.css. */
+
+.rd-wide { grid-column: 1 / -1; }
+.rd-empty { color: var(--ink-soft); font-size: 0.86rem; line-height: 1.55; margin: 0 0 8px; }
+.rd-muted { color: var(--ink-faint); font-size: 0.78rem; }
+.rd-danger { color: var(--blue-ink); font-weight: 600; }
+.rd-ok { color: var(--acid-ink); font-size: 0.86rem; font-weight: 600; margin: 10px 0 0; }
+.rd-warn { font-size: 0.82rem; line-height: 1.5; background: var(--amber-soft); border-radius: 8px; padding: 8px 12px; margin: 10px 0; }
+.rd-bad { color: var(--blue-ink); }
+.rd-h4 { font-family: "Fredoka", sans-serif; font-weight: 600; font-size: 0.92rem; margin: 20px 0 8px; }
+.rd-h4-top { margin-top: 26px; padding-top: 16px; border-top: 1px solid var(--rule-soft); }
+
+/* meters */
+.rd-meters { list-style: none; margin: 0; padding: 0; }
+.rd-meters li + li { border-top: 1px solid var(--rule-soft); }
+.rd-meter { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; padding: 10px 0; }
+.rd-meter-main b { font-size: 0.92rem; }
+.rd-actions { display: flex; gap: 12px; flex: none; }
+.rd-kind {
+  display: inline-block; margin-left: 8px; font-size: 0.66rem; letter-spacing: 0.04em; text-transform: uppercase;
+  font-weight: 600; padding: 2px 8px; border-radius: 999px; background: var(--surface-2); color: var(--ink-soft);
+}
+.rd-kind.warn { background: var(--amber-soft); color: var(--ink); }
+
+/* tabs */
+.rd-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; border-bottom: 1px solid var(--rule-soft); }
+.rd-tab {
+  font: inherit; font-size: 0.84rem; font-weight: 600; background: none; border: none; cursor: pointer;
+  padding: 8px 14px; color: var(--ink-faint); border-bottom: 3px solid transparent; margin-bottom: -1px;
+}
+.rd-tab.on { color: var(--ink); border-bottom-color: var(--blue); }
+.rd-tab:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; border-radius: 6px; }
+
+/* forms */
+.rd-form select, .rd-map select, .rd-csv select, .rd-bill select {
+  font: inherit; font-size: 0.86rem; color: var(--ink); background: var(--paper);
+  border: 1px solid var(--rule); border-radius: 6px; padding: 0.55rem 0.7rem; width: 100%;
+}
+.rd-form .unit-row select { width: auto; }
+
+/* csv */
+.rd-csv-top { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.rd-file input { font-size: 0.82rem; max-width: 100%; }
+.rd-csv-file { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; margin: 14px 0 0; font-size: 0.86rem; }
+.rd-map { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px 16px; }
+.rd-map .field label, .rd-form .field label { display: block; font-size: 0.66rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 6px; }
+.rd-summary { font-size: 0.9rem; margin: 0 0 10px; }
+.rd-newmeters { font-size: 0.84rem; line-height: 1.5; background: var(--surface-2); border-radius: 8px; padding: 10px 12px; margin: 0 0 10px; }
+.rd-check { display: flex; gap: 8px; align-items: center; font-size: 0.8rem; color: var(--ink-soft); margin: 6px 0; }
+
+/* tables */
+.rd-tablewrap { overflow-x: auto; margin-top: 4px; }
+.rd-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.rd-table th { text-align: left; font-size: 0.64rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-faint); font-weight: 600; padding: 6px 10px 6px 0; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+.rd-table td { padding: 8px 10px 8px 0; border-bottom: 1px solid var(--rule-soft); vertical-align: top; }
+.rd-table .r { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.rd-row-error td { background: color-mix(in srgb, var(--amber) 8%, transparent); }
+.rd-pill {
+  display: inline-block; font-size: 0.7rem; padding: 2px 8px; border-radius: 999px; background: var(--surface-2); color: var(--ink-soft); line-height: 1.4;
+}
+.rd-pill.good { background: color-mix(in srgb, var(--acid) 14%, var(--surface)); color: var(--acid-ink); font-weight: 600; }
+.rd-pill.bad { background: var(--amber-soft); color: var(--ink); border-radius: 8px; }
+
+/* bill reader */
+.rd-bill-drop { border: 2px dashed var(--rule); border-radius: 12px; padding: 18px; text-align: center; font-size: 0.86rem; color: var(--ink-soft); }
+.rd-conf { font-size: 0.7rem; padding: 1px 7px; border-radius: 999px; }
+.rd-conf.high { background: color-mix(in srgb, var(--acid) 14%, var(--surface)); color: var(--acid-ink); }
+.rd-conf.medium { background: var(--amber-soft); }
+.rd-conf.low { background: var(--amber-soft); color: var(--blue-ink); font-weight: 600; }

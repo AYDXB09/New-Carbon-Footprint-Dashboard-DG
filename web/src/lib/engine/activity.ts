@@ -106,8 +106,14 @@ export function runActivitySimulation(
       qtyByKey.set(k, (qtyByKey.get(k) ?? 0) + r.quantity);
     }
   }
-  for (const f of Object.values(input.factors)) {
+  const expectedUnit = `kgCO2e/${input.quantityUnit}`;
+  for (const [k, f] of Object.entries(input.factors)) {
     if (!(f.value > 0)) throw new Error("A factor must be positive");
+    // A factor in kgCO2e per m3 applied to litres would be wrong by a factor of 1000 and look
+    // perfectly plausible, so mismatched units are refused rather than trusted.
+    if (f.unit !== expectedUnit) {
+      throw new Error(`Factor "${k}" is in ${f.unit}, but readings are in ${input.quantityUnit} (expected ${expectedUnit})`);
+    }
   }
 
   const keys = [...qtyByKey.keys()].sort();

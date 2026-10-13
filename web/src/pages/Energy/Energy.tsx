@@ -8,24 +8,23 @@ import "./Energy.css";
 import Sidebar from "../../components/Sidebar";
 import { getOrCreateMySchool, type SchoolRow } from "../../lib/school";
 import {
-  createMeter,
-  createReading,
   createReport,
   getDefaultFactor,
   getLatestReport,
   listFactorCandidates,
   listMeters,
-  listReadings,
   markModuleEnabled,
   toEngineFactor,
-  updateMeter,
-  updateReading,
   type EmissionFactorRow,
   type EnergyReportRow,
   type Meter,
   type MeterReading,
 } from "../../lib/energy";
-import { analyseCoverage } from "../../lib/engine/coverage";
+import MetersCard from "../../components/readings/MetersCard";
+import ReadingsCard from "../../components/readings/ReadingsCard";
+import { MODULE_CONFIG } from "../../lib/modules";
+import { listAllReadings } from "../../lib/readings";
+import { analyseCoverageByMeter } from "../../lib/engine/coverage";
 import { runEnergySimulation, DEFAULT_ITERATIONS, type EnergyResult } from "../../lib/engine/energy";
 
 const MODULE = "energy";
@@ -111,22 +110,9 @@ export default function Energy() {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
 
-  // Step 01 — meter
-  const [meter, setMeter] = useState<Meter | null>(null);
-  const [meterEditing, setMeterEditing] = useState(true); // true until a meter exists
-  const [meterLocation, setMeterLocation] = useState("");
-  const [meterNumber, setMeterNumber] = useState("");
-  const [meterError, setMeterError] = useState<string | null>(null);
-  const [savingMeter, setSavingMeter] = useState(false);
-
-  // Step 02 — reading (this slice supports exactly one, per meter)
+  // Steps 01 and 02 — every meter and every reading for this school
+  const [meters, setMeters] = useState<Meter[]>([]);
   const [readings, setReadings] = useState<MeterReading[]>([]);
-  const [readingEditing, setReadingEditing] = useState(true);
-  const [periodStart, setPeriodStart] = useState("");
-  const [periodEnd, setPeriodEnd] = useState("");
-  const [consumption, setConsumption] = useState("");
-  const [readingError, setReadingError] = useState<string | null>(null);
-  const [savingReading, setSavingReading] = useState(false);
 
   // Step 03 — result
   const [report, setReport] = useState<EnergyReportRow | null>(null);
@@ -135,37 +121,25 @@ export default function Energy() {
   const [running, setRunning] = useState(false);
   const [runError, setRunError] = useState<string | null>(null);
 
+  async function loadAll(schoolRow: SchoolRow) {
+    const [m, r] = await Promise.all([listMeters(schoolRow.id, MODULE), listAllReadings(schoolRow.id, MODULE)]);
+    setMeters(m);
+    setReadings(r);
+    return r;
+  }
+
   useEffect(() => {
     (async () => {
       try {
         const schoolRow = await getOrCreateMySchool();
         setSchool(schoolRow);
-
-        const meters = await listMeters(schoolRow.id, MODULE);
-        const firstMeter = meters[0] ?? null;
-        if (firstMeter) {
-          setMeter(firstMeter);
-          setMeterLocation(firstMeter.location);
-          setMeterNumber(firstMeter.meter_number ?? "");
-          setMeterEditing(false);
-
-          const meterReadings = await listReadings(firstMeter.id);
-          if (meterReadings.length > 0) {
-            setReadings(meterReadings);
-            const first = meterReadings[0];
-            setPeriodStart(first.period_start);
-            setPeriodEnd(first.period_end);
-            setConsumption(String(first.quantity));
-            setReadingEditing(false);
-
-            const candidates = await listFactorCandidates(MODULE, FACTOR_KEY, schoolRow.country_code);
-            setFactorCandidates(candidates);
-
-            const existingReport = await getLatestReport(schoolRow.id, MODULE);
-            if (existingReport) {
-              setReport(existingReport);
-              setSelectedFactorId(existingReport.factor_set_version);
-            }
+        const loaded = await loadAll(schoolRow);
+        if (loaded.length > 0) {
+          setFactorCandidates(await listFactorCandidates(MODULE, FACTOR_KEY, schoolRow.country_code));
+          const existingReport = await getLatestReport(schoolRow.id, MODULE);
+          if (existingReport) {
+            setReport(existingReport);
+            setSelectedFactorId(existingReport.factor_set_version);
           }
         }
       } catch (err) {
@@ -176,9 +150,26 @@ export default function Energy() {
     })();
   }, []);
 
+  // Readings changed (added, imported or deleted): reload them, and drop the
+  // saved result from view — it described the old readings, so don't keep
+  // presenting it as current until the school reruns.
+  async function onReadingsChanged() {
+    if (!school) return;
+    try {
+      await loadAll(school);
+      setReport(null);
+      setSelectedFactorId(null);
+    } catch (err) {
+      setLoadError(formatError(err));
+    }
+  }
+
+  // Judged per meter and combined (weakest meter decides) — see engine/coverage.
   const coverage = useMemo(() => {
     if (readings.length === 0) return null;
-    return analyseCoverage(readings.map((r) => ({ start: r.period_start, end: r.period_end })));
+    return analyseCoverageByMeter(
+      readings.map((r) => ({ start: r.period_start, end: r.period_end, meterId: r.meter_id })),
+    ).overall;
   }, [readings]);
 
   const selectedFactor = factorCandidates.find((f) => f.id === selectedFactorId) ?? null;
@@ -195,6 +186,7 @@ export default function Energy() {
           consumptionKwh: r.quantity,
           periodStart: r.period_start,
           periodEnd: r.period_end,
+          meterId: r.meter_id,
         })),
         gridIntensity: toEngineFactor(selectedFactor),
         denominators: {
@@ -207,70 +199,6 @@ export default function Energy() {
   }, [selectedFactor, report, readings, school]);
 
   const isPreviewingOtherSource = report != null && selectedFactorId !== report.factor_set_version;
-
-  async function handleSaveMeter() {
-    if (!school) return;
-    const location = meterLocation.trim();
-    if (!location) {
-      setMeterError("Enter a location for this meter.");
-      return;
-    }
-    setMeterError(null);
-    setSavingMeter(true);
-    try {
-      const saved = meter
-        ? await updateMeter(meter.id, { location, meter_number: meterNumber.trim() || null })
-        : await createMeter(school.id, MODULE, location, meterNumber.trim() || null);
-      setMeter(saved);
-      setMeterEditing(false);
-    } catch (err) {
-      setMeterError(formatError(err));
-    } finally {
-      setSavingMeter(false);
-    }
-  }
-
-  async function handleSaveReading() {
-    if (!school || !meter) return;
-    if (!periodStart || !periodEnd) {
-      setReadingError("Enter both a start and end date.");
-      return;
-    }
-    if (periodEnd <= periodStart) {
-      setReadingError("The end date must be after the start date.");
-      return;
-    }
-    const quantity = Number(consumption);
-    if (!(quantity > 0)) {
-      setReadingError("Enter a consumption figure greater than zero.");
-      return;
-    }
-    setReadingError(null);
-    setSavingReading(true);
-    try {
-      const existing = readings[0];
-      const saved = existing
-        ? await updateReading(existing.id, { quantity, period_start: periodStart, period_end: periodEnd })
-        : await createReading({
-            schoolId: school.id,
-            module: MODULE,
-            meterId: meter.id,
-            quantity,
-            periodStart: periodStart,
-            periodEnd: periodEnd,
-          });
-      setReadings([saved]);
-      setReadingEditing(false);
-      // Inputs changed underneath a report that already existed — don't keep
-      // showing it as current until the school reruns against the new numbers.
-      setReport(null);
-      setSelectedFactorId(null);
-    } catch (err) {
-      setReadingError(formatError(err));
-    } finally {
-      setSavingReading(false);
-    }
-  }
 
   async function handleRun() {
     if (!school || readings.length === 0 || !coverage) return;
@@ -291,6 +219,7 @@ export default function Energy() {
             consumptionKwh: r.quantity,
             periodStart: r.period_start,
             periodEnd: r.period_end,
+            meterId: r.meter_id,
           })),
           gridIntensity: toEngineFactor(factor),
           denominators: {
@@ -384,7 +313,7 @@ export default function Energy() {
       <main className="main energy-main">
         <div className="topbar-inline">
           <div>
-            <p className="eyebrow mono">/energy — one meter, one reading, one sourced number</p>
+            <p className="eyebrow mono">/energy — your meters, your readings, one sourced number</p>
             <h1>Energy</h1>
           </div>
           <div className="chips">
@@ -400,143 +329,41 @@ export default function Energy() {
 
         {loadError && <p className="mono" style={{ color: "var(--amber)" }}>{loadError}</p>}
 
-        {/* 01 — METER */}
+        {/* 01 — METERS */}
         <section className="entry">
           <div className="entry-index">
             <p className="entry-num">01</p>
-            <h2 className="entry-title">Register the meter</h2>
-            <p className="entry-desc">Once per meter. Every reading attaches here.</p>
+            <h2 className="entry-title">Your meters</h2>
+            <p className="entry-desc">One per supply — a building, a chiller, an annex. Every reading attaches to one.</p>
           </div>
-          <div className="card">
-            {meterEditing ? (
-              <>
-                <div className="field-grid">
-                  <div className="field">
-                    <label htmlFor="meterLocation">Location</label>
-                    <input
-                      id="meterLocation"
-                      type="text"
-                      placeholder="e.g. Main Building"
-                      value={meterLocation}
-                      onChange={(e) => setMeterLocation(e.target.value)}
-                      autoComplete="off"
-                    />
-                    <div className="hint">Doubles as the meter's name.</div>
-                  </div>
-                  <div className="field">
-                    <label htmlFor="meterNumber">Meter number (optional)</label>
-                    <input
-                      id="meterNumber"
-                      type="text"
-                      placeholder="e.g. DEWA-88213"
-                      value={meterNumber}
-                      onChange={(e) => setMeterNumber(e.target.value)}
-                      autoComplete="off"
-                    />
-                    <div className="hint">Lets a future CSV or bill import auto-match this reading.</div>
-                  </div>
-                </div>
-                <div className="form-actions">
-                  <button className="btn btn-primary" onClick={handleSaveMeter} disabled={savingMeter}>
-                    {savingMeter ? "Saving…" : "Save meter →"}
-                  </button>
-                </div>
-                {meterError && <p className="error-text">{meterError}</p>}
-              </>
-            ) : (
-              <div className="summary-row">
-                <div>
-                  <div className="summary-text">
-                    Meter registered: <b>{meter?.location}</b>
-                  </div>
-                  <div className="summary-meta">
-                    {meter?.meter_number ? `Meter number ${meter.meter_number}` : "No meter number given"}
-                  </div>
-                </div>
-                <button className="btn-link" onClick={() => setMeterEditing(true)}>Edit</button>
-              </div>
-            )}
-          </div>
+          <MetersCard
+            schoolId={school.id}
+            config={MODULE_CONFIG.energy}
+            meters={meters}
+            readings={readings}
+            onChanged={onReadingsChanged}
+          />
         </section>
 
-        {/* 02 — READING */}
+        {/* 02 — READINGS */}
         <section className="entry">
           <div className="entry-index">
             <p className="entry-num">02</p>
-            <h2 className="entry-title">Log a reading</h2>
+            <h2 className="entry-title">Add readings</h2>
             <p className="entry-desc">A full year is used as-is. Anything shorter is flagged, not hidden.</p>
           </div>
-          <div className={`card${meterEditing ? " locked" : ""}`}>
-            {meterEditing && <span className="lock-pill">🔒 Finish step 01 first</span>}
-            {readingEditing ? (
-              <>
-                <div className="field-grid">
-                  <div className="field">
-                    <label htmlFor="periodStart">Period start</label>
-                    <input
-                      id="periodStart"
-                      type="date"
-                      value={periodStart}
-                      onChange={(e) => setPeriodStart(e.target.value)}
-                    />
-                  </div>
-                  <div className="field">
-                    <label htmlFor="periodEnd">Period end</label>
-                    <input
-                      id="periodEnd"
-                      type="date"
-                      value={periodEnd}
-                      onChange={(e) => setPeriodEnd(e.target.value)}
-                    />
-                  </div>
-                  <div className="field">
-                    <label htmlFor="consumption">Consumption</label>
-                    <div className="unit-row">
-                      <input
-                        id="consumption"
-                        type="number"
-                        min="0"
-                        step="1"
-                        placeholder="e.g. 1109200"
-                        value={consumption}
-                        onChange={(e) => setConsumption(e.target.value)}
-                      />
-                      <span>kWh</span>
-                    </div>
-                  </div>
-                  <div className="field">
-                    <label>Denominators on file</label>
-                    <div className="readonly-value">
-                      {hasDenominators
-                        ? `${school.gfa_conditioned_m2} m² conditioned · ${school.students_total} students`
-                        : "Not set yet"}
-                    </div>
-                    <div className="hint">
-                      {hasDenominators
-                        ? "Set on the school's profile page, not here."
-                        : "Add floor area and enrolment on your profile to see intensity figures."}
-                    </div>
-                  </div>
-                </div>
-                <div className="form-actions">
-                  <button className="btn btn-primary" onClick={handleSaveReading} disabled={savingReading || meterEditing}>
-                    {savingReading ? "Saving…" : "Save reading →"}
-                  </button>
-                </div>
-                {readingError && <p className="error-text">{readingError}</p>}
-              </>
-            ) : (
-              <div className="summary-row">
-                <div>
-                  <div className="summary-text">
-                    {periodStart} → {periodEnd} · {Number(consumption).toLocaleString()} kWh
-                  </div>
-                  <div className="summary-meta">
-                    {coverage ? `${coverage.coveredDays} days, ${coverageLabel(coverage.coverageClass).toLowerCase()}` : ""}
-                  </div>
-                </div>
-                <button className="btn-link" onClick={() => setReadingEditing(true)}>Edit</button>
-              </div>
+          <div>
+            <ReadingsCard
+              school={school}
+              config={MODULE_CONFIG.energy}
+              meters={meters}
+              readings={readings}
+              onChanged={onReadingsChanged}
+            />
+            {!hasDenominators && (
+              <p className="hint" style={{ marginTop: 10 }}>
+                Add floor area and enrolment on your profile to see intensity figures.
+              </p>
             )}
           </div>
         </section>
@@ -548,10 +375,10 @@ export default function Energy() {
             <h2 className="entry-title">See the result</h2>
             <p className="entry-desc">The band width is the data-quality signal — no separate confidence score sits next to it.</p>
           </div>
-          <div className={`card${readingEditing || meterEditing ? " locked" : ""}`}>
-            {(readingEditing || meterEditing) && <span className="lock-pill">🔒 Finish step 02 first</span>}
+          <div className={`card${readings.length === 0 ? " locked" : ""}`}>
+            {readings.length === 0 && <span className="lock-pill">🔒 Add a reading first</span>}
 
-            {!report && !readingEditing && !meterEditing && (
+            {!report && readings.length > 0 && (
               <div className="form-actions" style={{ marginTop: 0 }}>
                 <button className="btn btn-primary" onClick={handleRun} disabled={running}>
                   {running ? "Running…" : "Run calculation →"}

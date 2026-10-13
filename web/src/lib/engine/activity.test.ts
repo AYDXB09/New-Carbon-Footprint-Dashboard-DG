@@ -166,6 +166,12 @@ describe("runActivitySimulation", () => {
     expect(r.derivation.some((s) => /double-count/i.test(s.detail))).toBe(true);
   });
 
+  it("refuses a factor whose unit does not match the readings", () => {
+    expect(() =>
+      runActivitySimulation(base({ factors: { a: factor({ unit: "kgCO2e/litre" }) } }), { seed: 1 }),
+    ).toThrow(/kgCO2e\/litre.*m3/);
+  });
+
   it("rejects input that cannot produce an honest number", () => {
     expect(() => runActivitySimulation(base({ readings: [] }), { seed: 1 })).toThrow(/no readings/);
     expect(() =>

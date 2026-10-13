@@ -9,6 +9,7 @@ import Profile from "./pages/Profile/Profile";
 import Energy from "./pages/Energy/Energy";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Reports from "./pages/Reports/Reports";
+import ModulePage from "./pages/Module/ModulePage";
 import Login from "./pages/Login/Login";
 import ComingSoon from "./pages/ComingSoon/ComingSoon";
 import Legal from "./pages/Legal/Legal";
@@ -54,7 +55,18 @@ createRoot(document.getElementById("root")!).render(
               </RequireAuth>
             }
           />
-          {(["water", "transportation", "digital", "waste", "benchmarking"] as const).map(
+          {(["water", "waste", "transportation"] as const).map((m) => (
+            <Route
+              key={m}
+              path={`/${m}`}
+              element={
+                <RequireAuth>
+                  <ModulePage module={m} />
+                </RequireAuth>
+              }
+            />
+          ))}
+          {(["digital", "benchmarking"] as const).map(
             (nav) => (
               <Route
                 key={nav}

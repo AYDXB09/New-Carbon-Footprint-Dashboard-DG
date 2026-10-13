@@ -8,9 +8,11 @@ import { getOrCreateMySchool } from "../../lib/school";
 import { listReports } from "../../lib/reports";
 import type { EnergyReportRow } from "../../lib/energy";
 import { formatError } from "../../lib/formatError";
+import { kindLabel } from "../../lib/modules";
+import type { QuantityModule } from "../../lib/units";
 import {
   categoryFor,
-  consumptionKwh,
+  activityQuantity,
   coverageLabel,
   fmt,
   fmtDate,
@@ -47,9 +49,9 @@ function ReportCard({ r, isLatest }: { r: EnergyReportRow; isLatest: boolean }) 
   const cat = categoryFor(r.module);
   const h = headline(r);
   const inten = intensities(r);
-  const { steps, factor } = readDerivation(r);
-  const kwh = consumptionKwh(r);
-  const factorUnit = steps.find((s) => s.label === "Grid intensity applied")?.unit ?? "kgCO2e/kWh";
+  const { steps, factors } = readDerivation(r);
+  const qty = activityQuantity(r);
+  const stepUnit = steps.find((s) => s.label.endsWith("applied"))?.unit ?? "kgCO2e/kWh";
 
   return (
     <details className="rep-card" style={{ ["--cat" as string]: cat.colour }}>
@@ -97,8 +99,8 @@ function ReportCard({ r, isLatest }: { r: EnergyReportRow; isLatest: boolean }) 
             />
           )}
           <Fact
-            label="Metered consumption"
-            value={kwh != null ? `${fmt(kwh, 0)} kWh` : "—"}
+            label={qty?.label ?? "Quantity"}
+            value={qty ? `${fmtStepValue(qty.value)} ${pretty(qty.unit)}` : "—"}
             sub={inten.kwhPerM2 != null ? `${fmt(inten.kwhPerM2, 0)} kWh per m²` : undefined}
           />
           <Fact
@@ -106,17 +108,24 @@ function ReportCard({ r, isLatest }: { r: EnergyReportRow; isLatest: boolean }) 
             value={inten.kgPerM2 != null ? `${fmt(inten.kgPerM2)} kgCO₂e/m²` : "—"}
             sub={inten.kgPerStudent != null ? `${fmt(inten.kgPerStudent, 0)} kgCO₂e per student` : "Needs floor area and students"}
           />
-          <Fact
-            label="Emission factor"
-            value={factor?.value != null ? `${factor.value} ${pretty(factorUnit)}` : "—"}
-            sub={
-              factor
-                ? `${[factor.sourceOrg, factor.vintageYear].filter(Boolean).join(" ")} · ${SCOPE_LABEL[factor.scope ?? ""] ?? factor.scope ?? "unknown scope"}${
-                    factor.uncertaintyPct ? ` · ±${factor.uncertaintyPct}%` : ""
-                  }`
-                : undefined
-            }
-          />
+          {(factors.length > 0 ? factors : [null]).map((factor, i) => (
+            <Fact
+              key={factor?.id ?? i}
+              label={
+                factor?.key
+                  ? `Emission factor · ${kindLabel(r.module as QuantityModule, factor.key) ?? factor.key}`
+                  : "Emission factor"
+              }
+              value={factor?.value != null ? `${factor.value} ${pretty(factor.unit ?? stepUnit)}` : "—"}
+              sub={
+                factor
+                  ? `${[factor.sourceOrg, factor.vintageYear].filter(Boolean).join(" ")} · ${SCOPE_LABEL[factor.scope ?? ""] ?? factor.scope ?? "unknown scope"}${
+                      factor.uncertaintyPct ? ` · ±${factor.uncertaintyPct}%` : ""
+                    }${factor.standIn ? " · stand-in, not local" : ""}`
+                  : undefined
+              }
+            />
+          ))}
           <Fact
             label="School size when run"
             value={r.denom_gfa_conditioned_m2 != null ? `${fmt(r.denom_gfa_conditioned_m2, 0)} m² conditioned` : "Floor area not set"}

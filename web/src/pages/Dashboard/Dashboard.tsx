@@ -10,10 +10,13 @@ import type { EnergyReportRow } from "../../lib/energy";
 import { formatError } from "../../lib/formatError";
 import {
   CATEGORIES,
+  activityQuantity,
+  categoryFor,
   coverageLabel,
   fmt,
   fmtDate,
   fmtPeriod,
+  fmtStepValue,
   halfBandPct,
   headline,
   intensities,
@@ -48,41 +51,46 @@ function RangeBar({ p10, median, p90 }: { p10: number; median: number; p90: numb
 
 export function DashboardView({ school, reports }: { school: SchoolRow; reports: EnergyReportRow[] }) {
   const latest = latestPerModule(reports);
-  const energy = latest.get("energy") ?? null;
-  const h = energy ? headline(energy) : null;
-  const inten = energy ? intensities(energy) : null;
-  const steps = nextSteps(school, energy);
+  // Headline: Energy when there is one, otherwise whichever report is newest. Categories are
+  // never added together here — ranges can't be summed, and a joint simulation doesn't exist yet.
+  const featured = latest.get("energy") ?? newestFirst(reports)[0] ?? null;
+  const h = featured ? headline(featured) : null;
+  const inten = featured ? intensities(featured) : null;
+  const qty = featured ? activityQuantity(featured) : null;
+  const steps = nextSteps(school, [...latest.values()]);
   const recent = newestFirst(reports).slice(0, 3);
 
   return (
     <>
-      {energy && h ? (
-        <section className="dash-hero">
+      {featured && h ? (
+        <section className="dash-hero" style={{ ["--cat" as string]: categoryFor(featured.module).colour }}>
           <div className="dash-hero-top">
-            <CategoryIcon category="energy" size={48} />
+            <CategoryIcon category={featured.module} size={48} />
             <div className="dash-hero-title">
-              <div className="dash-kicker">{school.name || "Your school"} · Energy</div>
+              <div className="dash-kicker">
+                {school.name || "Your school"} · {categoryFor(featured.module).label}
+              </div>
               <div className="dash-big">
                 <b>{fmt(h.median)}</b>
                 <span>tCO₂e</span>
               </div>
             </div>
             <div className="dash-chips">
-              <span className={`dash-chip ${energy.coverage === "full_year" ? "good" : "warn"}`}>
-                {coverageLabel(energy.coverage)}
+              <span className={`dash-chip ${featured.coverage === "full_year" ? "good" : "warn"}`}>
+                {coverageLabel(featured.coverage)}
               </span>
-              <span className="dash-chip data">{tierLabel(energy.tier)}</span>
+              <span className="dash-chip data">{tierLabel(featured.tier)}</span>
             </div>
           </div>
 
           <p className="dash-sub">
             Likely between <b>{fmt(h.p10)}</b> and <b>{fmt(h.p90)}</b> tonnes (±{fmt(halfBandPct(h), 1)}%) for{" "}
-            {fmtPeriod(energy)}. The width of the range is how well the inputs are known.
+            {fmtPeriod(featured)}. The width of the range is how well the inputs are known.
           </p>
 
           <RangeBar p10={h.p10} median={h.median} p90={h.p90} />
 
-          {energy.coverage !== "full_year" && (
+          {featured.coverage !== "full_year" && (
             <p className="dash-warn">
               This covers part of a year and has not been scaled up, so don’t compare it with a full-year figure.
             </p>
@@ -98,8 +106,17 @@ export function DashboardView({ school, reports }: { school: SchoolRow; reports:
               <span>kgCO₂e per student</span>
             </div>
             <div>
-              <b>{inten?.kwhPerM2 != null ? fmt(inten.kwhPerM2, 0) : "—"}</b>
-              <span>kWh per m²</span>
+              {inten?.kwhPerM2 != null ? (
+                <>
+                  <b>{fmt(inten.kwhPerM2, 0)}</b>
+                  <span>kWh per m²</span>
+                </>
+              ) : (
+                <>
+                  <b>{qty ? fmtStepValue(qty.value) : "—"}</b>
+                  <span>{qty ? `${qty.label.toLowerCase()} (${qty.unit.replace("CO2e", "CO₂e")})` : "quantity"}</span>
+                </>
+              )}
             </div>
           </div>
         </section>
@@ -118,7 +135,7 @@ export function DashboardView({ school, reports }: { school: SchoolRow; reports:
 
       <div className="section-title">
         <h2>Categories</h2>
-        <span className="n">{energy ? "1 of 5 reporting" : "0 of 5 reporting"}</span>
+        <span className="n">{latest.size} of {CATEGORIES.length} reporting</span>
       </div>
       <div className="dash-cats">
         {CATEGORIES.map((c) => {

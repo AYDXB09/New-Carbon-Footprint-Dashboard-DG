@@ -14,21 +14,15 @@ import Sidebar, { type NavKey } from "../../components/Sidebar";
 // handle the same situation instead of hiding it behind a greyed-out tab.
 // Dashboard and Reports are built (read-only views over saved reports), so they
 // no longer appear here.
-type Unbuilt = Exclude<NavKey, "energy" | "profile" | "dashboard" | "reports">;
+type Unbuilt = Exclude<NavKey, "energy" | "profile" | "dashboard" | "reports" | "water" | "waste" | "transportation">;
 
 const GROUP: Record<Unbuilt, string> = {
-  water: "Workspace",
-  transportation: "Workspace",
   digital: "Workspace",
-  waste: "Workspace",
   benchmarking: "Compare",
 };
 
 const LABEL: Record<Unbuilt, string> = {
-  water: "Water",
-  transportation: "Transportation",
   digital: "Digital",
-  waste: "Waste",
   benchmarking: "Benchmarking",
 };
 
@@ -45,8 +39,8 @@ export default function ComingSoon({ nav }: { nav: Unbuilt }) {
         </div>
         <div className="section" style={{ maxWidth: "52ch" }}>
           <p style={{ color: "var(--ink-soft)", lineHeight: 1.6, fontSize: "0.92rem", margin: "0 0 1.2rem" }}>
-            Not built yet — {LABEL[nav]} is designed but not shipped. Energy is the one module that's live end to
-            end right now: register a meter, log a full-year reading, and get a real sourced number back.
+            Not built yet — {LABEL[nav]} is designed but not shipped. Energy, Water, Waste and Transportation are
+            live: register what you measure, add readings, and get a real sourced number back.
           </p>
           <Link className="btn btn-primary" to="/energy">
             Go to Energy →
