@@ -23,20 +23,12 @@
  * widens on its own.
  */
 
-import { analyseCoverage, type Coverage, type DateRange } from "./coverage";
-import { logNormalParams, mulberry32, randomLogNormal } from "./random";
+import { sampleEmissions } from "./activity";
+import { analyseCoverageByMeter, type Coverage, type MeterPeriod } from "./coverage";
 import { summarize, type Distribution } from "./stats";
+import type { DerivationStep, Factor } from "./types";
 
-/** A factor as stored in the emission_factors table. */
-export interface Factor {
-  value: number;
-  unit: string;
-  /** 1-sigma as a percentage of value. Null/0 => treated as known exactly. */
-  uncertaintyPct: number | null;
-  sourceName: string;
-  sourceOrg: string;
-  vintageYear: number;
-}
+export type { DerivationStep, Factor };
 
 /** One meter reading, already converted to canonical units at entry. */
 export interface EnergyReading {
@@ -44,6 +36,12 @@ export interface EnergyReading {
   periodStart: string;
   periodEnd: string;
   meterLocation?: string;
+  /**
+   * Which meter this reading belongs to. Coverage is judged per meter, so two
+   * meters covering the same months are not flagged as double-counting. Omit
+   * for a single-meter school.
+   */
+  meterId?: string;
 }
 
 /** Denominators, snapshot onto the report so intensities stay recomputable. */
@@ -62,14 +60,6 @@ export interface SimulationOptions {
   /** Required — a report must be reproducible from its stored seed. */
   seed: number;
   iterations?: number;
-}
-
-export interface DerivationStep {
-  label: string;
-  detail: string;
-  value?: number;
-  unit?: string;
-  source?: string;
 }
 
 export interface EnergyResult {
@@ -122,26 +112,21 @@ export function runEnergySimulation(
 
   const totalConsumptionKwh = input.readings.reduce((a, r) => a + r.consumptionKwh, 0);
 
-  const periods: DateRange[] = input.readings.map((r) => ({
+  const periods: MeterPeriod[] = input.readings.map((r) => ({
     start: r.periodStart,
     end: r.periodEnd,
+    meterId: r.meterId,
   }));
-  const coverage = analyseCoverage(periods);
+  const { overall: coverage } = analyseCoverageByMeter(periods);
 
   // Sample the factor, not the reading: at Tier 2 the kWh figure is metered.
-  const rng = mulberry32(options.seed);
-  const { mu, sigma } = logNormalParams(
-    input.gridIntensity.value,
-    input.gridIntensity.uncertaintyPct,
+  const emissionsKgCo2e = summarize(
+    sampleEmissions(
+      [{ factor: input.gridIntensity, quantity: totalConsumptionKwh }],
+      options.seed,
+      iterations,
+    ),
   );
-
-  const samples = new Array<number>(iterations);
-  for (let i = 0; i < iterations; i++) {
-    const intensity = sigma === 0 ? input.gridIntensity.value : randomLogNormal(rng, mu, sigma);
-    samples[i] = totalConsumptionKwh * intensity;
-  }
-
-  const emissionsKgCo2e = summarize(samples);
 
   const gfa = input.denominators?.gfaConditionedM2 ?? null;
   const students = input.denominators?.studentsTotal ?? null;
@@ -196,8 +181,8 @@ export function runEnergySimulation(
     derivation.push({
       label: "Warning — overlapping periods",
       detail:
-        "Two or more readings cover the same dates. Consumption has been summed as " +
-        "submitted, so this total may double-count. Check for a re-issued bill.",
+        "Two or more readings for the same meter cover the same dates. Consumption has been " +
+        "summed as submitted, so this total may double-count. Check for a re-issued bill.",
     });
   }
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { analyseCoverage, classifyCoverage } from "./coverage";
+import { analyseCoverage, analyseCoverageByMeter, classifyCoverage } from "./coverage";
 
 describe("classifyCoverage", () => {
   it("applies the 3-month and 12-month thresholds", () => {
@@ -105,5 +105,53 @@ describe("analyseCoverage", () => {
     expect(() => analyseCoverage([{ start: "not-a-date", end: "2025-01-01" }])).toThrow(
       /Invalid date/,
     );
+  });
+});
+
+describe("analyseCoverageByMeter", () => {
+  const yr = { start: "2025-01-01", end: "2025-12-31" };
+
+  it("is exactly analyseCoverage for a single (or implicit) meter", () => {
+    const periods = [
+      { start: "2025-01-01", end: "2025-02-28" },
+      { start: "2025-04-01", end: "2025-12-31" },
+    ];
+    expect(analyseCoverageByMeter(periods).overall).toEqual(analyseCoverage(periods));
+  });
+
+  it("does not call two meters over the same months an overlap", () => {
+    const { overall, perMeter } = analyseCoverageByMeter([
+      { ...yr, meterId: "a" },
+      { ...yr, meterId: "b" },
+    ]);
+    expect(overall.hasOverlap).toBe(false);
+    expect(overall.coverageClass).toBe("full_year");
+    expect(perMeter.size).toBe(2);
+  });
+
+  it("lets the weakest meter decide the school-level class", () => {
+    const { overall } = analyseCoverageByMeter([
+      { ...yr, meterId: "a" },
+      { start: "2025-01-01", end: "2025-02-28", meterId: "b" },
+    ]);
+    expect(overall.coverageClass).toBe("spot_check");
+    expect(overall.coveredDays).toBe(59);
+  });
+
+  it("collects gaps and overlaps from every meter", () => {
+    const { overall } = analyseCoverageByMeter([
+      { start: "2025-01-01", end: "2025-03-31", meterId: "a" },
+      { start: "2025-05-01", end: "2025-12-31", meterId: "a" },
+      { start: "2025-01-01", end: "2025-06-30", meterId: "b" },
+      { start: "2025-06-01", end: "2025-12-31", meterId: "b" },
+    ]);
+    expect(overall.gaps).toEqual([{ start: "2025-04-01", end: "2025-04-30" }]);
+    expect(overall.hasOverlap).toBe(true);
+  });
+
+  it("handles no readings", () => {
+    const { overall, perMeter } = analyseCoverageByMeter([]);
+    expect(overall.coveredDays).toBe(0);
+    expect(perMeter.size).toBe(0);
   });
 });

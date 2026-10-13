@@ -124,3 +124,53 @@ export function analyseCoverage(periods: readonly DateRange[]): Coverage {
     coverageClass: classifyCoverage(coveredDays),
   };
 }
+
+export interface MeterPeriod extends DateRange {
+  /** Readings without a meter id are treated as belonging to one implicit meter. */
+  meterId?: string;
+}
+
+export interface MeterCoverage {
+  /**
+   * The school-level answer: the WEAKEST meter decides. A building meter with a
+   * full year beside an annex meter with three months still leaves the school's
+   * total short, so the whole figure is flagged rather than quietly called a
+   * full year. Gaps and the overlap flag are collected from every meter.
+   */
+  overall: Coverage;
+  perMeter: Map<string, Coverage>;
+}
+
+const IMPLICIT_METER = "_";
+
+/**
+ * Coverage is judged per meter, then combined. Two meters that both cover the
+ * same twelve months are NOT overlapping — each is its own supply — whereas two
+ * bills for the same meter covering the same days are. Analysing every reading
+ * as one pile (analyseCoverage) cannot tell those apart.
+ *
+ * With a single meter this is exactly analyseCoverage.
+ */
+export function analyseCoverageByMeter(periods: readonly MeterPeriod[]): MeterCoverage {
+  const groups = new Map<string, DateRange[]>();
+  for (const p of periods) {
+    const key = p.meterId ?? IMPLICIT_METER;
+    const list = groups.get(key) ?? [];
+    list.push({ start: p.start, end: p.end });
+    groups.set(key, list);
+  }
+  if (groups.size === 0) return { overall: analyseCoverage([]), perMeter: new Map() };
+
+  const perMeter = new Map<string, Coverage>();
+  for (const [key, list] of groups) perMeter.set(key, analyseCoverage(list));
+
+  let weakest: Coverage | null = null;
+  const gaps: DateRange[] = [];
+  let hasOverlap = false;
+  for (const c of perMeter.values()) {
+    if (weakest === null || c.coveredDays < weakest.coveredDays) weakest = c;
+    gaps.push(...c.gaps);
+    hasOverlap = hasOverlap || c.hasOverlap;
+  }
+  return { overall: { ...weakest!, gaps, hasOverlap }, perMeter };
+}
