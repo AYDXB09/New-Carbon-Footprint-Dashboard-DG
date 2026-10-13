@@ -5,6 +5,7 @@ import "../Energy/Energy.css";
 import "./Module.css";
 import Sidebar from "../../components/Sidebar";
 import MetersCard from "../../components/readings/MetersCard";
+import BillUploadPanel from "../../components/readings/BillUploadPanel";
 import ReadingsCard from "../../components/readings/ReadingsCard";
 import { runActivitySimulation, DEFAULT_ACTIVITY_ITERATIONS } from "../../lib/engine/activity";
 import { analyseCoverageByMeter } from "../../lib/engine/coverage";
@@ -278,7 +279,18 @@ export default function ModulePage({ module }: { module: ModuleKey }) {
             <h2 className="entry-title">Add readings</h2>
             <p className="entry-desc">A full year is used as-is. Anything shorter is flagged, not hidden.</p>
           </div>
-          <ReadingsCard school={school} config={config} meters={meters} readings={readings} onChanged={onChanged} />
+          <ReadingsCard
+            school={school}
+            config={config}
+            meters={meters}
+            readings={readings}
+            onChanged={onChanged}
+            billPanel={
+              config.billUpload ? (
+                <BillUploadPanel schoolId={school.id} config={config} meters={meters} readings={readings} onSaved={onChanged} />
+              ) : undefined
+            }
+          />
         </section>
 
         <section className="entry">

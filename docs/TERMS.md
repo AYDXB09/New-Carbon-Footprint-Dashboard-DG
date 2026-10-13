@@ -1,6 +1,6 @@
 # Terms of Service
 
-**Last updated: October 10, 2026**
+**Last updated: October 13, 2026**
 
 These Terms govern your use of CarbonTally (the "Service"), a tool that helps a school estimate
 its greenhouse-gas emissions and see how uncertain that estimate is. By creating an account or
@@ -40,8 +40,11 @@ particular, only add a contact's name, email or phone number if that person woul
 school's carbon-accounting records to list them. You keep ownership of your data; you give us
 permission to store and process it only as needed to run the Service for you.
 
-Details found by the website look-up are **suggestions, produced partly by an AI model, and may be
-wrong or out of date.** They stay unconfirmed until you confirm them — check each one.
+Details found by the website look-up, and figures read from a bill by AI, are **suggestions,
+produced partly by an AI model, and may be wrong or out of date.** Nothing is saved until you
+confirm it — check each one against the original. Where no emission factor has been published for
+your country, the Service may offer another country's factor as a clearly labelled **stand-in**
+with a deliberately wide range; treat any result built on one as a rough order of magnitude.
 
 ## 5. Acceptable use
 

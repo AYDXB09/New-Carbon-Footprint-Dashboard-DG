@@ -21,6 +21,7 @@ import {
   type MeterReading,
 } from "../../lib/energy";
 import MetersCard from "../../components/readings/MetersCard";
+import BillUploadPanel from "../../components/readings/BillUploadPanel";
 import ReadingsCard from "../../components/readings/ReadingsCard";
 import { MODULE_CONFIG } from "../../lib/modules";
 import { listAllReadings } from "../../lib/readings";
@@ -359,6 +360,15 @@ export default function Energy() {
               meters={meters}
               readings={readings}
               onChanged={onReadingsChanged}
+              billPanel={
+                <BillUploadPanel
+                  schoolId={school.id}
+                  config={MODULE_CONFIG.energy}
+                  meters={meters}
+                  readings={readings}
+                  onSaved={onReadingsChanged}
+                />
+              }
             />
             {!hasDenominators && (
               <p className="hint" style={{ marginTop: 10 }}>

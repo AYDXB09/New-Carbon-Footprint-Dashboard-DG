@@ -1,6 +1,6 @@
 # Privacy Policy
 
-**Last updated: October 10, 2026**
+**Last updated: October 13, 2026**
 
 This policy explains what CarbonTally collects, why, and who else touches it. CarbonTally is a
 small, independently run, **pre-launch** project — this describes what the software actually does
@@ -20,16 +20,21 @@ website and not yet confirmed, or it was detected and you confirmed it.
 **Contacts you add.** Up to two people per school, each with a name, job title, email address and
 phone number. These are other people's details, so only add someone who expects to be listed.
 
-**Energy data.** The meters you register (a location name and an optional meter number), the
-readings you log for them (a start date, an end date and the consumption), and the reports the
-calculation produces from those readings.
+**Your readings.** For each part of the service you use (energy, water, waste, school-vehicle
+fuel): the meters, waste streams or vehicle groups you register (a name and an optional reference
+number), the readings you log for them (a start date, an end date and a quantity, and whether it
+was typed in, imported from a CSV file or read from a bill), and the reports the calculation
+produces from those readings. A CSV file you import is read inside your browser; the file itself is
+never uploaded, and only the rows you confirm are saved.
 
-**What we do not collect.** No bills, photos or documents — the bill-upload feature described on
-the site is designed but **not built**, and collects nothing. No student information of any kind —
-the travel-survey feature is likewise designed but not built. We do not collect account or billing
-numbers.
+**What we do not collect.** We do not keep bills, photos or documents: if you use **Read a bill**
+(section 2), the file is read and discarded, and we keep only the figures you confirm. We never ask
+for, or save, account or billing numbers, names, addresses or amounts from a bill. No student
+information of any kind — the travel-survey feature is designed but not built.
 
-## 2. The website look-up (the one AI feature)
+## 2. The two AI features
+
+### 2a. The website look-up
 
 If you type your school's website into **Look up** on the profile page, a function on our server:
 
@@ -45,12 +50,27 @@ website address and what was extracted from it (public information about the sch
 Google keeps requests, and whether it may use them to improve its models, is governed by Google's
 own terms for the Gemini API tier in use — we have not configured anything to change that.
 
+### 2b. Read a bill
+
+If you use **Read a bill** on the Energy or Water page, your browser sends the PDF or photo you
+choose to a function on our server, which passes it to **Google's Gemini API** to read. The
+request asks for only the billing period, the quantity and its unit, and the meter number. We do
+not store the file, and the function's logs record only that a request happened and how many
+readings came back, never the contents. The figures are shown to you next to the original file,
+and nothing is saved until you confirm them.
+
+**Be aware:** a bill often prints an account number, a name, an address and amounts. We do not ask
+for them and never receive or keep them, but they are on the file Google reads. Cover or crop them
+first if you would rather Google did not see them. How long Google keeps requests, and whether it
+may use them to improve its models, is governed by Google's terms for the Gemini API tier in use,
+which is currently a standard, non-enterprise key; we have not configured anything to change that.
+
 ## 3. Services that handle your data
 
 | Service | What it does here |
 |---|---|
 | **Supabase** | Database, sign-in, sign-in emails and the server function. The database is hosted in Southeast Asia (Singapore); the server function runs on Supabase's edge network. |
-| **Google (Gemini API)** | Reads public school-website text for the look-up in section 2. |
+| **Google (Gemini API)** | Reads public school-website text for the look-up (2a) and, if you use it, the bills you upload (2b). |
 | **Google Fonts** | Serves this site's typefaces. Loading any page sends your IP address and browser details to Google, as with any site that uses it. |
 | **Mapbox** | Finds a location from an address (server side), and draws the map on your profile page (in your browser, which sends Mapbox your IP address, the map area being viewed and Mapbox's own usage telemetry). |
 | **GitHub** | Hosts the source code and runs a scheduled job that sends a public request to the database to keep it awake. That job contains no user data. |

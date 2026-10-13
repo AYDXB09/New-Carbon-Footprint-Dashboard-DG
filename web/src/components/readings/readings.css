@@ -69,3 +69,22 @@
 .rd-conf.high { background: color-mix(in srgb, var(--acid) 14%, var(--surface)); color: var(--acid-ink); }
 .rd-conf.medium { background: var(--amber-soft); }
 .rd-conf.low { background: var(--amber-soft); color: var(--blue-ink); font-weight: 600; }
+
+/* bill review: the original on the left, the editable draft on the right */
+.rd-bill-drop input[type="file"] { font-size: 0.84rem; max-width: 100%; }
+.rd-bill-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 16px; align-items: start; margin-top: 12px; }
+.rd-bill-doc { position: sticky; top: 12px; border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; background: var(--surface-2); min-height: 280px; }
+.rd-bill-doc iframe { width: 100%; height: 520px; border: 0; display: block; }
+.rd-bill-doc img { width: 100%; display: block; }
+.rd-bill-row { border: 1px solid var(--rule); border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; background: var(--surface); }
+.rd-bill-row .rd-map { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 12px; }
+.rd-bill-row .rd-map .field:first-child, .rd-bill-row .rd-map .field:last-child { grid-column: 1 / -1; }
+.rd-bill-row.bad { border-color: color-mix(in srgb, var(--amber) 60%, var(--rule)); }
+.rd-bill-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.rd-bill-head .btn-link { margin-left: auto; }
+.rd-bill-row .rd-warn { margin: 0 0 10px; }
+@media (max-width: 900px) {
+  .rd-bill-split { grid-template-columns: 1fr; }
+  .rd-bill-doc { position: static; }
+  .rd-bill-doc iframe { height: 360px; }
+}
