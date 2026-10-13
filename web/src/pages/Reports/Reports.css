@@ -1,0 +1,56 @@
+/* Prefixed rep- on purpose — CSS is global in this app (see Dashboard.css). */
+
+.rep-main { max-width: 920px; }
+.rep-intro { color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6; max-width: 66ch; margin: 0 0 1.4rem; }
+.rep-error { color: var(--amber); font-size: 0.86rem; }
+
+.rep-empty { display: flex; gap: 16px; align-items: flex-start; background: var(--surface); border: 1px solid var(--rule); border-radius: 16px; padding: 1.5rem 1.6rem; }
+.rep-empty h2 { font-family: "Fredoka", sans-serif; font-weight: 600; font-size: 1.2rem; margin: 0 0 4px; }
+.rep-empty p { margin: 0 0 14px; color: var(--ink-soft); font-size: 0.9rem; line-height: 1.55; max-width: 52ch; }
+
+.rep-list { display: flex; flex-direction: column; gap: 10px; }
+.rep-card { background: var(--surface); border: 1px solid var(--rule); border-left: 5px solid var(--cat); border-radius: 14px; }
+.rep-card[open] { box-shadow: var(--shadow); }
+.rep-card > summary { display: flex; align-items: center; gap: 12px; padding: 13px 16px; cursor: pointer; list-style: none; }
+.rep-card > summary::-webkit-details-marker { display: none; }
+.rep-card > summary:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; border-radius: 12px; }
+
+.rep-main { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.rep-title { font-family: "Fredoka", sans-serif; font-weight: 600; font-size: 0.98rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.rep-latest { font-style: normal; font-family: "Work Sans", sans-serif; font-size: 0.6rem; letter-spacing: 0.07em; text-transform: uppercase; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--acid); color: #fff; }
+.rep-meta { font-size: 0.76rem; color: var(--ink-faint); margin-top: 2px; }
+.rep-head { display: flex; flex-direction: column; align-items: flex-end; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.rep-head b { font-family: "Fredoka", sans-serif; font-weight: 600; font-size: 1.25rem; }
+.rep-head > span { font-size: 0.72rem; color: var(--ink-faint); }
+.rep-head small { font-size: 0.72rem; color: var(--ink-faint); }
+.rep-chev { color: var(--ink-faint); font-size: 1.4rem; line-height: 1; transition: transform 0.15s ease; }
+.rep-card[open] .rep-chev { transform: rotate(90deg); }
+
+.rep-body { padding: 0 16px 16px; border-top: 1px solid var(--rule-soft); }
+.rep-warn { margin: 14px 0 0; font-size: 0.82rem; line-height: 1.5; background: var(--amber-soft); border-radius: 8px; padding: 8px 12px; }
+
+.rep-facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin-top: 14px; }
+.rep-fact { display: flex; flex-direction: column; gap: 2px; background: var(--paper); border-radius: 10px; padding: 10px 12px; min-width: 0; }
+.rep-fact-l { font-size: 0.64rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-faint); }
+.rep-fact-v { font-size: 0.95rem; font-weight: 600; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.rep-fact-s { font-size: 0.74rem; color: var(--ink-soft); line-height: 1.4; }
+
+.rep-h4 { font-family: "Fredoka", sans-serif; font-weight: 600; font-size: 0.92rem; margin: 20px 0 6px; }
+.rep-steps { list-style: none; margin: 0; padding: 0; counter-reset: repstep; }
+.rep-steps li { counter-increment: repstep; position: relative; padding: 9px 0 9px 30px; border-top: 1px solid var(--rule-soft); }
+.rep-steps li:first-child { border-top: none; }
+.rep-steps li::before {
+  content: counter(repstep); position: absolute; left: 0; top: 9px; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--cat); color: #fff; font-size: 0.68rem; font-weight: 700; display: flex; align-items: center; justify-content: center;
+}
+.rep-step-top { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+.rep-step-l { font-size: 0.86rem; font-weight: 600; }
+.rep-step-v { font-size: 0.84rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.rep-step-d { font-size: 0.78rem; color: var(--ink-soft); line-height: 1.5; margin-top: 2px; }
+.rep-step-s { font-size: 0.74rem; color: var(--blue-ink); margin-top: 2px; }
+
+@media (max-width: 720px) {
+  .rep-card > summary { flex-wrap: wrap; }
+  .rep-head { align-items: flex-start; order: 3; width: 100%; flex-direction: row; gap: 8px; align-items: baseline; }
+  .rep-chev { margin-left: auto; }
+}

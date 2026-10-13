@@ -10,9 +10,9 @@
 > [!NOTE]
 > **Pre-launch, local-only.** CarbonTally is a multi-tenant rebuild of an earlier single-school
 > calculator (see [The original calculator](#the-original-calculator)). There is no hosted site yet.
-> Today it has a landing page, passwordless sign-in, a school profile, and **one working module —
-> Energy**. Of the nine items in the app's sidebar, two are real; the other seven are tagged
-> "Soon" and are designed, not built. The figures on the landing-page dashboard are illustrative.
+> Today it has a landing page, passwordless sign-in, a school profile, **one working module —
+> Energy** — and a Dashboard and Reports view over what it saves. Of the nine items in the
+> app's sidebar, four are real; the other five are tagged "Soon" and are designed, not built. The figures on the landing-page dashboard are illustrative.
 
 Carbon-accounting tools tend to hand a whole school one score, so a campus with twelve months of
 half-hourly meter data and no travel survey is judged as if both were equally well known.
@@ -41,7 +41,7 @@ measure of how well it is known, instead of one tidy number that hides the guess
 
 <p align="center"><img src="docs/screenshots/login.png" alt="Passwordless sign-in: one email field and a send-link button, with links to the Terms and Privacy Policy" width="640"></p>
 
-The signed-in pages (school profile, Energy) are not pictured: they need a real sign-in, and they have
+The signed-in pages (school profile, Energy, Dashboard, Reports) are not pictured: they need a real sign-in, and they have
 not been screenshotted yet.
 
 ## What works today
@@ -54,6 +54,10 @@ not been screenshotted yet.
   whether it was typed, detected, or detected and confirmed.
 - **Energy module (Tier 2).** Register a meter, log a reading with explicit start and end dates, and
   get a Monte Carlo result — p10 / median / p90 tCO₂e — with a sourced derivation trace.
+- **Dashboard and Reports.** The Dashboard shows the latest figure with its range, intensities per m²
+  and per student, a tile per category, and concrete next steps (for example "the reading covers part
+  of a year"). Reports lists every saved calculation with its emission factor, school size at the
+  time, seed, and a step-by-step derivation. Both are read-only.
 - **Reproducible, snapshotted reports.** A saved report stores its random seed, iteration count,
   factor version and the school-size figures it was computed against, so it can be regenerated and
   normalised later even if the school's profile changes.
@@ -79,7 +83,8 @@ asserts it.
 ## How a number gets made
 
 These are the design choices in `web/src/lib/engine/`, each pinned by a test (49 engine tests; `npm test`
-runs 51 in all, including two that stop the in-app legal text drifting from `docs/`):
+runs 81 in all: 30 for the report-reading helpers behind the Dashboard and Reports, and two that
+stop the in-app legal text drifting from `docs/`):
 
 - **At Tier 2 only the factor is uncertain.** A metered reading is a reading, not an estimate, so the
   band comes from the factor's published uncertainty. At Tier 1, consumption would itself be estimated
@@ -100,9 +105,9 @@ runs 51 in all, including two that stop the in-app legal text drifting from `doc
 
 | Area | State |
 |---|---|
-| Landing page, sign-in, school profile, Energy | **Built.** The signed-in screens are the least battle-tested part: they have not had a full end-to-end walkthrough yet. |
+| Landing page, sign-in, school profile, Energy, Dashboard, Reports | **Built.** The signed-in screens are the least battle-tested part: they have not had a full end-to-end walkthrough yet. |
 | Self-service account deletion | **Written, not applied or tested.** `supabase/migrations/0012_delete_own_account.sql` and a test script are in the repo, and the Profile page has the button; the migration must be applied to a project first. |
-| Water, Transportation, Digital, Waste, Dashboard, Benchmarking, Reports | **Not built** — tagged "Soon" in the sidebar, each opens an honest placeholder. |
+| Water, Transportation, Digital, Waste, Benchmarking | **Not built** — tagged "Soon" in the sidebar, each opens an honest placeholder. |
 | AI bill upload, CSV import | **Designed, not built.** The bill-upload design never stores the file and always routes extraction through a human review step. |
 | Peer benchmarking | **Deliberately off** until a real cohort of comparable schools exists. |
 | Emission factors | Two example grid factors are seeded (UAE, IEA 2025; global, Ember 2024). The Ember figure was confirmed from secondary summaries because the primary page blocked automated fetching — its row says so. No utility-specific factor is included: its number could not be verified from a primary source, so none was invented. |
@@ -113,7 +118,7 @@ runs 51 in all, including two that stop the in-app legal text drifting from `doc
 **Backend** — Supabase: Postgres with row-level security, Auth (magic link), one Edge Function (Deno)
 **AI** — Google Gemini, used for exactly one thing: extracting a school's name, email and addresses from its public website, always shown as unconfirmed
 **Integrations** — Mapbox geocoding, Google Fonts
-**Quality** — Vitest (51 tests), oxlint, `tsc -b`
+**Quality** — Vitest (81 tests), oxlint, `tsc -b`
 **Automation** — a scheduled GitHub Action (`supabase-keepalive.yml`) that queries the database every ~5 days, because free-tier Supabase projects pause after about a week of inactivity — which has already happened twice
 
 ## Data model
@@ -136,7 +141,7 @@ cd New-Carbon-Footprint-Dashboard-DG/web
 npm install
 cp .env.example .env.local     # then fill in the three values
 npm run dev                    # http://localhost:5173
-npm test                       # 51 tests
+npm test                       # 81 tests
 npm run build                  # type-check + production build
 ```
 

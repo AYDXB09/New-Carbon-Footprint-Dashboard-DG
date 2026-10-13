@@ -12,27 +12,27 @@ import Sidebar, { type NavKey } from "../../components/Sidebar";
 // shell and the same active nav item lit, and just says plainly that the
 // module isn't built, matching how the tier tracks on the landing page
 // handle the same situation instead of hiding it behind a greyed-out tab.
-const GROUP: Record<Exclude<NavKey, "energy" | "profile">, string> = {
-  dashboard: "Workspace",
+// Dashboard and Reports are built (read-only views over saved reports), so they
+// no longer appear here.
+type Unbuilt = Exclude<NavKey, "energy" | "profile" | "dashboard" | "reports">;
+
+const GROUP: Record<Unbuilt, string> = {
   water: "Workspace",
   transportation: "Workspace",
   digital: "Workspace",
   waste: "Workspace",
   benchmarking: "Compare",
-  reports: "Compare",
 };
 
-const LABEL: Record<Exclude<NavKey, "energy" | "profile">, string> = {
-  dashboard: "Dashboard",
+const LABEL: Record<Unbuilt, string> = {
   water: "Water",
   transportation: "Transportation",
   digital: "Digital",
   waste: "Waste",
   benchmarking: "Benchmarking",
-  reports: "Reports",
 };
 
-export default function ComingSoon({ nav }: { nav: Exclude<NavKey, "energy" | "profile"> }) {
+export default function ComingSoon({ nav }: { nav: Unbuilt }) {
   return (
     <div className="shell">
       <Sidebar active={nav} />

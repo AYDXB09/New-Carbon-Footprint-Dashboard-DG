@@ -71,8 +71,8 @@ export default function Sidebar(props: Props) {
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
-  // Only Energy and School profile are real, built pages right now; the
-  // other seven were indistinguishable from these two in the menu — same
+  // Energy, Dashboard, Reports and School profile are real, built pages; the
+  // others were indistinguishable from these two in the menu — same
   // dot, same weight — with no way to tell which led somewhere real before
   // clicking. "Soon" makes that visible up front instead of on arrival.
   const item = (key: NavKey, to: string, label: string, built = true) => (
@@ -177,7 +177,7 @@ export default function Sidebar(props: Props) {
           <>
             <nav className="navgroup">
               <span className="navlabel">Workspace</span>
-              {item("dashboard", "/dashboard", "Dashboard", false)}
+              {item("dashboard", "/dashboard", "Dashboard")}
               {item("energy", "/energy", "Energy")}
               {item("water", "/water", "Water", false)}
               {item("transportation", "/transportation", "Transportation", false)}
@@ -187,7 +187,7 @@ export default function Sidebar(props: Props) {
             <nav className="navgroup">
               <span className="navlabel">Compare</span>
               {item("benchmarking", "/benchmarking", "Benchmarking", false)}
-              {item("reports", "/reports", "Reports", false)}
+              {item("reports", "/reports", "Reports")}
             </nav>
             <nav className="navgroup">
               <span className="navlabel">Account</span>

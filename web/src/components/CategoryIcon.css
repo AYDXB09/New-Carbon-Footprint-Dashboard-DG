@@ -1,0 +1,5 @@
+/* Flat coloured tile with a white glyph — the report-card category marker.
+   --catico-bg is the tile colour (also used for the glyph's cut-outs) and
+   --catico-fg the glyph colour; both are set inline by CategoryIcon.tsx. */
+.catico { display: inline-flex; align-items: center; justify-content: center; flex: none; border-radius: 12px; background: var(--catico-bg); }
+.catico svg { width: 55%; height: 55%; fill: var(--catico-fg); }
