@@ -5,7 +5,7 @@ Given `{ "url": "https://www.someschool.edu" }`, returns detected `name`,
 `climate_zone` — all to be shown as **unconfirmed** in the UI until the
 school explicitly confirms each field.
 
-## Setup (one-time, do this yourself — Claude does not enter API keys)
+## Setup (one-time)
 
 1. Get a Gemini API key from [Google AI Studio](https://aistudio.google.com/apikey)
 2. In the Supabase dashboard for this project: **Project Settings → Edge
@@ -25,6 +25,5 @@ school explicitly confirms each field.
 - This function makes two outbound calls per request (Gemini, then
   Nominatim) plus the initial website fetch — expect it to take a few
   seconds; the frontend should show a loading state on "Look up".
-- Previously used Claude/Anthropic for extraction — switched to Gemini
-  2026-08-25 per Anvith's request. If switching back, the shape of
-  `ExtractResult` is unchanged, only `extractWithGemini` needs replacing.
+- To use a different model, the shape of `ExtractResult` is unchanged; only
+  `extractWithGemini` needs replacing.
